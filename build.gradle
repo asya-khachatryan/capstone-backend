@@ -1,0 +1,74 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.4'
+    id 'io.spring.dependency-management' version '1.1.4'
+}
+
+group = 'edu.aua'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+//project(':common') {
+//    dependencies {
+//    }
+//}
+//
+//project(':auth') {
+//    dependencies {
+//        implementation project(':common')
+//    }
+//}
+//
+//project(':calendly') {
+//    dependencies {
+//        implementation project(':common')
+//    }
+//}
+//
+//
+//
+//project(':interviews') {
+//    dependencies {
+//        implementation project(':common')
+//    }
+//}
+//
+//project(':onboarding-service') {
+//    dependencies {
+//        implementation project(':common')
+//    }
+//}
+//
+//project(':talents') {
+//    dependencies {
+//        implementation project(':common')
+//    }
+//}
+//
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
+//
+//dependencies {
+//    implementation project(':auth')
+////    implementation project(':calendly')
+//    implementation project(':common')
+////    implementation project(':interviews')
+////    implementation project(':onboarding-service')
+//    implementation project(':talents')
+//
+//}
