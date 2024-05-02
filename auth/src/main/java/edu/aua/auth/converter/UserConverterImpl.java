@@ -1,4 +1,4 @@
-package edu.aua.auth.converter.impl;
+package edu.aua.auth.converter;
 
 import edu.aua.auth.converter.UserConverter;
 import edu.aua.auth.dto.UserDTO;

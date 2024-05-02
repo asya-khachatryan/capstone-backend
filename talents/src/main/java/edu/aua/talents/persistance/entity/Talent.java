@@ -19,6 +19,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "talent")
 @Data
@@ -58,6 +60,9 @@ public class Talent {
 
     @Column(name = "cv_file_name")
     private String cvFileName;
+
+    @Column(name = "date_applied")
+    private LocalDateTime dateApplied;
 
     public String getFullName() {
         return this.getName() + "_" + this.getSurname();

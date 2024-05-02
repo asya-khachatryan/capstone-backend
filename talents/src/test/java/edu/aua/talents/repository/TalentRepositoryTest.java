@@ -1,4 +1,4 @@
-package com.disqo.talent_service.repository;
+package edu.aua.talents.repository;
 
 import edu.aua.talents.persistance.TalentRepository;
 import edu.aua.talents.persistance.entity.Talent;

@@ -14,25 +14,32 @@ java {
 repositories {
     mavenCentral()
     gradlePluginPortal()
+}
 
+allprojects {
+    apply plugin: 'java'
 }
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework:spring-test:6.1.6'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
 }
 
-//project(':common') {
-//    dependencies {
-//    }
-//}
-//
-//project(':auth') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-//
+project(':common') {
+    dependencies {
+    }
+}
+
+project(':auth') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
 //project(':calendly') {
 //    dependencies {
 //        implementation project(':common')
@@ -47,28 +54,25 @@ dependencies {
 //    }
 //}
 //
-//project(':onboarding-service') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-//
-//project(':talents') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-//
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
-//
-//dependencies {
-//    implementation project(':auth')
-////    implementation project(':calendly')
-//    implementation project(':common')
-////    implementation project(':interviews')
-////    implementation project(':onboarding-service')
-//    implementation project(':talents')
-//
-//}
+
+
+project(':talents') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':auth')
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation project(':auth')
+//    implementation project(':calendly')
+    implementation project(':common')
+//    implementation project(':interviews')
+    implementation project(':onboarding-service')
+    implementation project(':talents')
+
+}

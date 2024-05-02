@@ -1,5 +1,6 @@
 package edu.aua.talents.service.impl;
 
+import edu.aua.common.util.TimeService;
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.exception.TalentNotFoundException;
 import edu.aua.talents.persistance.TalentRepository;
@@ -10,14 +11,16 @@ import edu.aua.talents.service.SpecializationService;
 import edu.aua.talents.service.TalentService;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
-import edu.aua.talents.service.enums.TalentStatusClientType;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -42,9 +45,14 @@ public class TalentServiceImpl implements TalentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Talent> findALl() {
+    public List<Talent> findAll() {
         log.info("In findAll Talent requested to get all talents");
         return this.talentRepository.findAll();
+    }
+
+    @Override
+    public Page<Talent> findAll(Pageable page) {
+        return this.talentRepository.findAll(page);
     }
 
     @Override
@@ -61,6 +69,7 @@ public class TalentServiceImpl implements TalentService {
         log.info("Requested to create a talent");
         final Talent talent = talentConverter.convertToEntity(talentDTO);
         talent.setTalentStatus(TalentStatus.APPLIED);
+        talent.setDateApplied(TimeService.getUtcNow());
 //        mailClient.sendEmail(MailGenerator.mailGenerator(talent));
         log.info("In create Talent talent successfully created");
         return talentRepository.save(talent);
@@ -96,7 +105,7 @@ public class TalentServiceImpl implements TalentService {
     @Override
     public TalentResponseDTO updateStatus(TalentRequestDTO talentRequestDTO) {
         String email = talentRequestDTO.getEmail();
-        TalentStatusClientType status = talentRequestDTO.getTalentStatusClientType();
+        TalentStatus status = talentRequestDTO.getStatus();
         log.info("Requested to update status to {} of a talent with email {}", status, email);
         final Talent talent = this.talentRepository.findByEmail(email)
                 .orElseThrow(() -> new TalentNotFoundException("No talent found by this email", email));
@@ -121,5 +130,21 @@ public class TalentServiceImpl implements TalentService {
         talent.setCvFileName(cvFileName);
         talentRepository.save(talent);
         return talent.getCvFileName();
+    }
+
+    @Override
+    public List<Talent> findInterviewees() {
+        return talentRepository.findInterviewees();
+    }
+
+    @Override
+    public List<Talent> searchTalent(String query) {
+        return talentRepository.findTalentLike(query);
+    }
+
+    @Override
+    public String getCvUrl(Long id) {
+        Talent talent = findById(id);
+        return amazonClientService.getUrlByFileName(talent.getCvFileName());
     }
 }

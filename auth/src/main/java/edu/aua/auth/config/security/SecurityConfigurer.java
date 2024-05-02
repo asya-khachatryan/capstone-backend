@@ -28,6 +28,7 @@ import java.util.List;
 public class SecurityConfigurer {
     private static final String CSRF_HEADER_NAME = "X-CSRF-TOKEN";
     private static final String LOGIN_ENDPOINT = "/auth/**";
+    private static final String REGISTER_ENDPOINT = "/user/**";
     private static final String ADMIN_ENDPOINT = "/admin/**";
 
 
@@ -78,7 +79,9 @@ public class SecurityConfigurer {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authReq -> authReq.requestMatchers(LOGIN_ENDPOINT).permitAll())
+                .authorizeHttpRequests(authReq -> authReq.requestMatchers(REGISTER_ENDPOINT).permitAll())
 //                .authorizeHttpRequests(authReq -> authReq.requestMatchers(ADMIN_ENDPOINT).hasRole("ADMIN"))
+                .authorizeHttpRequests(authReq -> authReq.anyRequest().permitAll())
                 .authenticationManager(authenticationManager);
 
         http.addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);

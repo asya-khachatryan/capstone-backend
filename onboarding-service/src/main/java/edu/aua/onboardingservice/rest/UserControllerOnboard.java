@@ -4,6 +4,7 @@ import edu.aua.onboardingservice.facade.UserFacade;
 import edu.aua.onboardingservice.service.dto.MenteeDto;
 import edu.aua.onboardingservice.service.dto.MentorDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,11 +17,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user")
-public class UserController {
+@CrossOrigin
+public class UserControllerOnboard {
 
     private final UserFacade userFacade;
 
-    public UserController(UserFacade userFacade) {
+    public UserControllerOnboard(UserFacade userFacade) {
         this.userFacade = userFacade;
     }
 

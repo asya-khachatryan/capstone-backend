@@ -4,7 +4,6 @@ import edu.aua.onboardingservice.annotation.Facade;
 import edu.aua.onboardingservice.client.jiraclient.JiraIntegrationClientFacade;
 import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import edu.aua.onboardingservice.client.mailclient.MailGenerator;
-import edu.aua.onboardingservice.client.mailclient.MailSenderClient;
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.converter.MentorConverter;
 import edu.aua.onboardingservice.facade.UserFacade;
@@ -30,22 +29,24 @@ public class UserFacadeImpl implements UserFacade {
     private final MentorService mentorService;
     private final MenteeConverter menteeConverter;
     private final MentorConverter mentorConverter;
-    private final MailSenderClient mailSenderClient;
-    private final MailGenerator mailGenerator = new MailGenerator(new ITemplateResolverConfig().thymeleafTemplateEngine());
+//    private final MailSenderClient mailSenderClient;
+//    private final MailGenerator mailGenerator = new MailGenerator(new ITemplateResolverConfig().thymeleafTemplateEngine());
 
 
     public UserFacadeImpl(final JiraIntegrationClientFacade jiraClientFacade,
                           final MenteeService menteeService,
                           final MentorService mentorService,
                           final MenteeConverter menteeConverter,
-                          final MentorConverter mentorConverter,
-                          final MailSenderClient mailSenderClient) {
+                          final MentorConverter mentorConverter
+//            ,
+//                          final MailSenderClient mailSenderClient
+    ) {
         this.jiraClientFacade = jiraClientFacade;
         this.menteeService = menteeService;
         this.mentorService = mentorService;
         this.menteeConverter = menteeConverter;
         this.mentorConverter = mentorConverter;
-        this.mailSenderClient = mailSenderClient;
+//        this.mailSenderClient = mailSenderClient;
     }
 
     @Override

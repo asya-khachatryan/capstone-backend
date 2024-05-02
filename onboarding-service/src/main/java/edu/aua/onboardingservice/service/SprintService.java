@@ -19,6 +19,6 @@ public interface SprintService {
 
     boolean isTodayTheEmailDate(Sprint sprint);
 
-    void sendSprintCheckupEmail();
+//    void sendSprintCheckupEmail();
 
 }

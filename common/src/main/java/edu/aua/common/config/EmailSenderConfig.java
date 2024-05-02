@@ -3,12 +3,14 @@ package edu.aua.common.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
 @Configuration
+@PropertySource("classpath:common.properties")
 public class EmailSenderConfig {
 
     @Value("${email.sender.host}")
@@ -37,7 +39,7 @@ public class EmailSenderConfig {
 
 
     @Bean
-    public JavaMailSender getJavaMailSender(){
+    public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(host);
         mailSender.setPort(Integer.parseInt(port));
@@ -47,7 +49,7 @@ public class EmailSenderConfig {
         return mailSender;
     }
 
-    private Properties getMailSenderProperties(){
+    private Properties getMailSenderProperties() {
         Properties props = new Properties();
         props.put("mail.transport.protocol", protocol);
         props.put("mail.smtp.auth", auth);

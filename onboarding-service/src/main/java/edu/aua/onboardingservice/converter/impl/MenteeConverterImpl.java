@@ -1,5 +1,6 @@
 package edu.aua.onboardingservice.converter.impl;
 
+import edu.aua.onboardingservice.annotation.Converter;
 import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.persistance.entity.Mentee;

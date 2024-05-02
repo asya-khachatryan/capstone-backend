@@ -7,6 +7,8 @@ import java.io.IOException;
 
 public interface AmazonClientService {
 
+    String getUrlByFileName(String fileName);
+
     String uploadFile(MultipartFile file, Talent talent) throws IOException;
 
     byte[] downloadFile(String fileName);

@@ -56,7 +56,6 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userdto) {
-        System.out.println(userdto);
         return ResponseEntity.ok(userConverter.convert(userService.register(userdto)));
     }
 

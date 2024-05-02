@@ -1,5 +1,6 @@
 package edu.aua.talents.service.impl;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
@@ -14,20 +15,25 @@ import edu.aua.talents.persistance.entity.Specialization;
 import edu.aua.talents.persistance.entity.Talent;
 import edu.aua.talents.service.AmazonClientService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
+@Log4j2
+@PropertySource("classpath:talents.properties")
 public class AmazonClientServiceImpl implements AmazonClientService {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AmazonClientServiceImpl.class);
 
     private AmazonS3 amazonS3;
 
@@ -43,29 +49,32 @@ public class AmazonClientServiceImpl implements AmazonClientService {
     @Value("${amazon.s3.secret-key}")
     private String secretKey;
 
-    protected AmazonS3 getClient() {
-        return amazonS3;
+    private String generateUrl(String fileName, HttpMethod httpMethod) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DATE, 1); // Generated URL will be valid for 24 hours
+        return amazonS3.generatePresignedUrl(bucketName, fileName, calendar.getTime(), httpMethod).toString();
     }
 
-    protected String getUrl() {
-        return url;
-    }
-
-    protected String getBucketName() {
-        return bucketName;
+    public String getUrlByFileName(String fileName) {
+        if (!amazonS3.doesObjectExist(bucketName, fileName))
+            return "File does not exist";
+        log.info("Generating signed URL for file name {}", fileName);
+        return generateUrl(fileName, HttpMethod.GET);
     }
 
     @PostConstruct
     private void init() {
         final BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
         this.amazonS3 = AmazonS3ClientBuilder.standard()
-                .withRegion(Regions.US_EAST_2)
+                .withRegion(Regions.EU_WEST_3)
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .build();
     }
 
     public String uploadFile(MultipartFile file, Talent talent) {
-        LOGGER.info("Requested to upload a file to AWS S3 - {}", file.getName());
+        System.out.println(bucketName);
+        log.info("Requested to upload a file to AWS S3 - {}", file.getName());
         File fileObj = convertMultiPartFileToFile(file);
         final Specialization specialization = talent.getSpecialization();
         final String yearMonth = new SimpleDateFormat("yyyy-MM").format(new Date());
@@ -76,18 +85,18 @@ public class AmazonClientServiceImpl implements AmazonClientService {
                 .append("-").append("CV").toString();
         amazonS3.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        LOGGER.info("IN uploadFile AWS : {} file successfully uploaded", fileName);
+        log.info("IN uploadFile AWS : {} file successfully uploaded", fileName);
         return fileName;
     }
 
 
     public byte[] downloadFile(String fileName) {
-        LOGGER.info("Requested to download a file from AWS S3 - {}", fileName);
+        log.info("Requested to download a file from AWS S3 - {}", fileName);
         S3Object s3Object = amazonS3.getObject(bucketName, fileName);
         S3ObjectInputStream inputStream = s3Object.getObjectContent();
         try {
             byte[] content = IOUtils.toByteArray(inputStream);
-            LOGGER.info("IN downloadFile AWS : {} file successfully downloaded", fileName);
+            log.info("IN downloadFile AWS : {} file successfully downloaded", fileName);
             return content;
         } catch (IOException e) {
             e.printStackTrace();
@@ -97,37 +106,37 @@ public class AmazonClientServiceImpl implements AmazonClientService {
 
 
     public String deleteFile(String fileName) {
-        LOGGER.info("Requested to delete a file from AWS S3 - {}", fileName);
+        log.info("Requested to delete a file from AWS S3 - {}", fileName);
         amazonS3.deleteObject(bucketName, fileName);
-        LOGGER.info("IN deleteFile AWS : {} file successfully deleted", fileName);
+        log.info("IN deleteFile AWS : {} file successfully deleted", fileName);
         return fileName + " removed ...";
     }
 
 
     private File convertMultiPartFileToFile(MultipartFile file) {
-        LOGGER.info("Requested to covert a MultipartFile to a File object - {}", file.getName());
+        log.info("Requested to covert a MultipartFile to a File object - {}", file.getName());
         File convertedFile = new File(file.getOriginalFilename());
         try (FileOutputStream fos = new FileOutputStream(convertedFile)) {
             fos.write(file.getBytes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        LOGGER.info("IN convertMultiPartFileToFile AWS : {} file successfully converted", file.getName());
+        log.info("IN convertMultiPartFileToFile AWS : {} file successfully converted", file.getName());
         return convertedFile;
     }
 
     public String uploadFile(MultipartFile file) {
-        LOGGER.info("Requested to upload a file to AWS S3 - {}", file.getName());
+        log.info("Requested to upload a file to AWS S3 - {}", file.getName());
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         amazonS3.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
-        LOGGER.info("In uploadFile AWS : {} file successfully uploaded", fileName);
+        log.info("In uploadFile AWS : {} file successfully uploaded", fileName);
         return "File uploaded : " + fileName;
     }
 
     public String uploadFileMeta(MultipartFile file, Talent talent) throws IOException {
-        LOGGER.info("Requested to upload a file to AWS S3 - {}", file.getName());
+        log.info("Requested to upload a file to AWS S3 - {}", file.getName());
         final Specialization specialization = talent.getSpecialization();
         final String yearMonth = new SimpleDateFormat("yyyy-MM").format(new Date());
         final String fileName = new StringBuilder()
@@ -140,7 +149,7 @@ public class AmazonClientServiceImpl implements AmazonClientService {
         objectMetadata.setContentType(file.getContentType());
         objectMetadata.setContentLength(inputStream.available());
         amazonS3.putObject(new PutObjectRequest(bucketName, fileName, inputStream, objectMetadata));
-        LOGGER.info("IN uploadFile AWS : {} file successfully uploaded", fileName);
+        log.info("IN uploadFile AWS : {} file successfully uploaded", fileName);
         return "File uploaded : " + fileName;
     }
 }

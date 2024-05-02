@@ -1,7 +1,6 @@
 package edu.aua.onboardingservice.service.impl;
 
 import edu.aua.onboardingservice.client.mailclient.MailGenerator;
-import edu.aua.onboardingservice.client.mailclient.MailSenderClient;
 import edu.aua.onboardingservice.exception.SprintNotFoundException;
 import edu.aua.onboardingservice.persistance.SprintRepository;
 import edu.aua.onboardingservice.persistance.entity.Sprint;
@@ -23,14 +22,15 @@ public class SprintServiceImpl implements SprintService {
 
     private final RoadmapService roadmapService;
     private final SprintRepository sprintRepository;
-    private final MailSenderClient mailSenderClient;
+//    private final MailSenderClient mailSenderClient;
     private final MailGenerator mailGenerator;
 
     public SprintServiceImpl(RoadmapService roadmapService, SprintRepository sprintRepository,
-                             MailSenderClient mailSenderClient, MailGenerator mailGenerator) {
+//                             MailSenderClient mailSenderClient,
+                             MailGenerator mailGenerator) {
         this.roadmapService = roadmapService;
         this.sprintRepository = sprintRepository;
-        this.mailSenderClient = mailSenderClient;
+//        this.mailSenderClient = mailSenderClient;
         this.mailGenerator = mailGenerator;
     }
 
@@ -78,14 +78,14 @@ public class SprintServiceImpl implements SprintService {
         return sprint.getEndDate().equals(LocalDate.now());
     }
 
-    @Scheduled(cron = "0 0 14 * * ?", zone = "GMT+4")
-    @Override
-    public void sendSprintCheckupEmail() {
-        final List<Sprint> allSprints = this.findALl();
-        for (Sprint sprint : allSprints) {
-            if (this.isTodayTheEmailDate(sprint)) {
-                mailSenderClient.sendEmail(mailGenerator.sprintCheckupMailGenerator(sprint.getRoadmap().getMentee()));
-            }
-        }
-    }
+//    @Scheduled(cron = "0 0 14 * * ?", zone = "GMT+4")
+//    @Override
+//    public void sendSprintCheckupEmail() {
+//        final List<Sprint> allSprints = this.findALl();
+//        for (Sprint sprint : allSprints) {
+//            if (this.isTodayTheEmailDate(sprint)) {
+//                mailSenderClient.sendEmail(mailGenerator.sprintCheckupMailGenerator(sprint.getRoadmap().getMentee()));
+//            }
+//        }
+//    }
 }

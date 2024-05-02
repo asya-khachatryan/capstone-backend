@@ -9,6 +9,7 @@ import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectRoleRespon
 import edu.aua.onboardingservice.client.jiraclient.sprint.dto.JiraSprintDto;
 import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/jira")
+@CrossOrigin
 public class JiraIntegrationController {
 
     private final JiraIntegrationClientFacade jiraIntegrationClientFacade;

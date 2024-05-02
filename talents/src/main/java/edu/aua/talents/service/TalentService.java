@@ -4,6 +4,8 @@ import edu.aua.talents.exception.TalentNotFoundException;
 import edu.aua.talents.persistance.entity.*;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,7 +13,9 @@ import java.util.*;
 
 public interface TalentService {
 
-    List<Talent> findALl();
+    List<Talent> findAll();
+
+    Page<Talent> findAll(Pageable page);
 
     Talent findById(Long id) throws TalentNotFoundException;
 
@@ -26,4 +30,13 @@ public interface TalentService {
     List<Talent> findBySpecializationId(Long specializationId);
 
     String addCVForTalent(Long id, MultipartFile file) throws IOException ;
+
+    List<Talent> findInterviewees();
+
+    List<Talent> searchTalent(String query);
+
+    String getCvUrl(Long id);
+
+
+
 }

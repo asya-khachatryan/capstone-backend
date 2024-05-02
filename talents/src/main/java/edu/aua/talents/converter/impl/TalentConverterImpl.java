@@ -6,7 +6,6 @@ import edu.aua.talents.persistance.entity.Talent;
 import edu.aua.talents.service.SpecializationService;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
-import edu.aua.talents.service.enums.TalentStatusClientType;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -37,8 +36,9 @@ public class TalentConverterImpl implements TalentConverter {
         talentResponseDTO.setEmail(talent.getEmail());
         talentResponseDTO.setPhoneNumber(talent.getPhoneNumber());
         talentResponseDTO.setSpecialization(specializationConverter.convertToDTO(talent.getSpecialization()));
-        talentResponseDTO.setTalentStatusClientType(TalentStatusClientType.valueOf(talent.getTalentStatus().name()));
+        talentResponseDTO.setStatus(talent.getTalentStatus());
         talentResponseDTO.setCvFileName(talent.getCvFileName());
+        talentResponseDTO.setDateApplied(talent.getDateApplied());
         return talentResponseDTO;
     }
 
