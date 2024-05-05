@@ -1,8 +1,8 @@
 package edu.aua.interviews.converter;
 
-import edu.aua.interviews.persistance.entity.interview.Interview;
-import edu.aua.interviews.service.dto.InterviewRequestDTO;
-import edu.aua.interviews.service.dto.InterviewResponseDTO;
+import edu.aua.interviews.persistance.Interview;
+import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
+import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
 
 import java.util.List;
 

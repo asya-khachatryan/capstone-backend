@@ -17,7 +17,11 @@ public interface TalentService {
 
     Page<Talent> findAll(Pageable page);
 
-    Talent findById(Long id) throws TalentNotFoundException;
+    Talent findByIdOrThrow(Long id) throws TalentNotFoundException;
+
+    Talent findByEmailOrThrow(String email) throws TalentNotFoundException;
+
+    Boolean existsById(Long id);
 
     Talent create(TalentRequestDTO talentDTO);
 
@@ -33,7 +37,7 @@ public interface TalentService {
 
     List<Talent> findInterviewees();
 
-    List<Talent> searchTalent(String query);
+    List<Talent> searchTalent(String query, String type);
 
     String getCvUrl(Long id);
 

@@ -2,26 +2,21 @@ package edu.aua.interviews.service.impl;
 
 import com.disqo.interview_flow_service.client.JourneyClient;
 import edu.aua.interviews.converter.FeedbackConverter;
-import edu.aua.interviews.converter.TalentConverter;
+import edu.aua.interviews.persistance.Interview;
+import edu.aua.interviews.persistance.InterviewFeedback;
+import edu.aua.interviews.persistance.InterviewStatus;
+import edu.aua.interviews.persistance.InterviewType;
 import edu.aua.interviews.persistance.entity.Talent;
-import edu.aua.interviews.persistance.entity.interview.Interview;
-import edu.aua.interviews.persistance.entity.interview.InterviewFeedback;
-import edu.aua.interviews.persistance.enums.InterviewStatus;
-import edu.aua.interviews.persistance.enums.InterviewType;
-import edu.aua.interviews.persistance.enums.TalentStatus;
-import edu.aua.interviews.persistance.repositories.FeedbackRepository;
-import edu.aua.interviews.persistance.repositories.InterviewRepository;
+import edu.aua.interviews.repositories.FeedbackRepository;
+import edu.aua.interviews.repositories.InterviewRepository;
 import edu.aua.interviews.service.FeedbackService;
-import edu.aua.interviews.service.dto.InterviewFeedbackRequestDTO;
-import edu.aua.interviews.service.dto.InterviewFeedbackResponseDTO;
+import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
+import edu.aua.talents.converter.TalentConverter;
+import edu.aua.talents.persistance.entity.Talent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.OptionalDouble;
 
 
 @Service
@@ -39,7 +34,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private Integer passingThreshold;
 
     @Override
-    public InterviewFeedbackResponseDTO create(InterviewFeedbackRequestDTO feedbackRequestDTO, InterviewType interviewType, Long talentId) {
+    public InterviewFeedbackDTO create(InterviewFeedbackDTO feedbackRequestDTO, InterviewType interviewType, Long talentId) {
         log.info("Started search IN_PROGRESS interview ");
         Interview interview = interviewRepository.findAllByTalent_IdAndInterviewStatus(talentId, InterviewStatus.IN_PROGRESS);
         if (interview == null) {
@@ -54,10 +49,8 @@ public class FeedbackServiceImpl implements FeedbackService {
             case HR:
                 if (feedbackRequestDTO.getScore() >= passingThreshold) {
                     interview.setInterviewStatus(InterviewStatus.WAITING_STAGE);
-
                 } else {
                     interview.setInterviewStatus(InterviewStatus.CLOSED);
-
                 }
                 entity.setInterview(interview);
                 break;
@@ -66,7 +59,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 if (feedbackRequestDTO.getScore() >= passingThreshold) {
                     passedTechInterview(interview, entity);
                     log.info("calculate average score");
-                    double averageScore = calculateAVG(interview.getTalent().getInterviews());
+                    double averageScore = calculateAverage(interview.getTalent().getInterviews());
                     avgScoreValidation(interview, talent, averageScore);
                     journeyClient.sendFinalResult(this.talentConverter.convertToDTO(talent));
                 } else {
@@ -97,29 +90,27 @@ public class FeedbackServiceImpl implements FeedbackService {
         entity.setInterview(interview);
     }
 
-    private void avgScoreValidation(Interview interview, Talent talent, double averageScore) {
-        if (averageScore >= passingThreshold) {
-            talent.setOverallScore((int) averageScore);
-            talent.setTalentStatus(TalentStatus.PASSED);
-            log.info("change HR && TECH interview statuses  SUCCEED");
-
-            interview.getTalent().getInterviews().stream()
-                    .filter(t -> t.getInterviewStatus() == InterviewStatus.WAITING_STAGE)
-                    .forEach(i -> i.setInterviewStatus(InterviewStatus.SUCCEED));
-        }
-    }
-
-    private double calculateAVG(List<Interview> interviews) {
-        OptionalDouble avg = interviews
-                .stream().filter(s -> s.getInterviewStatus() == InterviewStatus.WAITING_STAGE)
-                .map(Interview::getInterviewFeedback)
-                .mapToInt(s -> s.getScore()).average();
-        if (avg.isEmpty()) {
-            log.warn("Exception occurred during calculate average score => field: {}, value {}", "avg", avg);
-            throw new NoSuchElementException("No value present");
-        }
-        return avg.getAsDouble();
-
-    }
-
+//    private void avgScoreValidation(Interview interview, Talent talent, double averageScore) {
+//        if (averageScore >= passingThreshold) {
+//            talent.setOverallScore((int) averageScore);
+//            talent.setTalentStatus(TalentStatus.PASSED);
+//            log.info("change HR && TECH interview statuses  SUCCEED");
+//
+//            interview.getTalent().getInterviews().stream()
+//                    .filter(t -> t.getInterviewStatus() == InterviewStatus.WAITING_STAGE)
+//                    .forEach(i -> i.setInterviewStatus(InterviewStatus.SUCCEED));
+//        }
+//    }
+//
+//    private double calculateAverage(List<Interview> interviews) {
+//        OptionalDouble avg = interviews
+//                .stream().filter(s -> s.getInterviewStatus() == InterviewStatus.WAITING_STAGE)
+//                .map(Interview::getInterviewFeedback)
+//                .mapToInt(s -> s.getScore()).average();
+//        if (avg.isEmpty()) {
+//            log.warn("Exception occurred during calculate average score => field: {}, value {}", "avg", avg);
+//            throw new NoSuchElementException("No value present");
+//        }
+//        return avg.getAsDouble();
+//    }
 }

@@ -1,5 +1,6 @@
 package edu.aua.talents.service.impl;
 
+import edu.aua.common.service.EmailService;
 import edu.aua.common.util.TimeService;
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.exception.TalentNotFoundException;
@@ -20,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+
+import static edu.aua.talents.service.utils.EmailGenerator.generateEmail;
 
 @Service
 @Slf4j
@@ -30,16 +32,16 @@ public class TalentServiceImpl implements TalentService {
     private final TalentRepository talentRepository;
     private final SpecializationService specializationService;
     private final TalentConverter talentConverter;
-    //    private final MailClient mailClient;
+    private final EmailService emailService;
     private final AmazonClientService amazonClientService;
 
     public TalentServiceImpl(TalentRepository talentRepository, SpecializationService specializationService,
                              TalentConverter talentConverter,
-            /*MailClient mailClient,*/ AmazonClientService amazonClientService) {
+                             EmailService emailService, AmazonClientService amazonClientService) {
         this.talentRepository = talentRepository;
         this.specializationService = specializationService;
         this.talentConverter = talentConverter;
-//        this.mailClient = mailClient;
+        this.emailService = emailService;
         this.amazonClientService = amazonClientService;
     }
 
@@ -47,20 +49,33 @@ public class TalentServiceImpl implements TalentService {
     @Transactional(readOnly = true)
     public List<Talent> findAll() {
         log.info("In findAll Talent requested to get all talents");
-        return this.talentRepository.findAll();
+        return talentRepository.findAll();
     }
 
     @Override
     public Page<Talent> findAll(Pageable page) {
-        return this.talentRepository.findAll(page);
+        return talentRepository.findAll(page);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Talent findById(Long id) {
+    public Talent findByIdOrThrow(Long id) {
         log.info("In findById Talent requested to get the talent with id {}", id);
-        return this.talentRepository.findById(id)
+        return talentRepository.findById(id)
                 .orElseThrow(() -> new TalentNotFoundException("No talent found by this id", id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Talent findByEmailOrThrow(String email) throws TalentNotFoundException {
+        return talentRepository.findByEmail(email)
+                .orElseThrow(() -> new TalentNotFoundException("No talent found by this email", email));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsById(Long id) {
+        return talentRepository.existsById(id);
     }
 
     @Override
@@ -70,7 +85,7 @@ public class TalentServiceImpl implements TalentService {
         final Talent talent = talentConverter.convertToEntity(talentDTO);
         talent.setTalentStatus(TalentStatus.APPLIED);
         talent.setDateApplied(TimeService.getUtcNow());
-//        mailClient.sendEmail(MailGenerator.mailGenerator(talent));
+        emailService.sendEmail(generateEmail(talent));
         log.info("In create Talent talent successfully created");
         return talentRepository.save(talent);
     }
@@ -79,7 +94,7 @@ public class TalentServiceImpl implements TalentService {
     @Transactional
     public Talent update(Long id, TalentRequestDTO talentDTO) {
         log.info("Requested to update a talent with id {}", id);
-        final Talent talent = this.talentRepository.findById(id)
+        final Talent talent = talentRepository.findById(id)
                 .orElseThrow(() -> new TalentNotFoundException("No talent found by this id", id));
         talent.setName(talentDTO.getName());
         talent.setSurname(talentDTO.getSurname());
@@ -107,7 +122,7 @@ public class TalentServiceImpl implements TalentService {
         String email = talentRequestDTO.getEmail();
         TalentStatus status = talentRequestDTO.getStatus();
         log.info("Requested to update status to {} of a talent with email {}", status, email);
-        final Talent talent = this.talentRepository.findByEmail(email)
+        final Talent talent = talentRepository.findByEmail(email)
                 .orElseThrow(() -> new TalentNotFoundException("No talent found by this email", email));
         talent.setTalentStatus(TalentStatus.valueOf(status.name()));
         log.info("In updateStatus Talent the status of talent with email {} successfully updated to {}", email, status);
@@ -137,14 +152,19 @@ public class TalentServiceImpl implements TalentService {
         return talentRepository.findInterviewees();
     }
 
+    //todo
     @Override
-    public List<Talent> searchTalent(String query) {
-        return talentRepository.findTalentLike(query);
+    public List<Talent> searchTalent(String query, String type) {
+        if (type.equals("Application")) {
+            return talentRepository.findTalentLike(query);
+        } else {
+            return talentRepository.findIntervieweeLike(query);
+        }
     }
 
     @Override
     public String getCvUrl(Long id) {
-        Talent talent = findById(id);
+        Talent talent = findByIdOrThrow(id);
         return amazonClientService.getUrlByFileName(talent.getCvFileName());
     }
 }

@@ -1,7 +1,7 @@
 package edu.aua.interviews.converter;
 
-import edu.aua.interviews.persistance.entity.User;
-import edu.aua.interviews.service.dto.UserDTO;
+import edu.aua.interviews.persistance.User;
+import edu.aua.interviews.persistance.dto.UserDTO;
 
 import java.util.List;
 

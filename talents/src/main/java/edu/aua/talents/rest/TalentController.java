@@ -72,7 +72,7 @@ public class TalentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<TalentResponseDTO> getTalentById(@PathVariable Long id) {
-        return ResponseEntity.ok(talentConverter.convertToDTO(talentService.findById(id)));
+        return ResponseEntity.ok(talentConverter.convertToDTO(talentService.findByIdOrThrow(id)));
     }
 
     @PostMapping
@@ -112,8 +112,8 @@ public class TalentController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<TalentResponseDTO>> search(@RequestParam String query) {
-        return ResponseEntity.ok(talentConverter.bulkConvertToDTO(talentService.searchTalent(query)));
+    public ResponseEntity<List<TalentResponseDTO>> search(@RequestParam String query, @RequestParam String type) {
+        return ResponseEntity.ok(talentConverter.bulkConvertToDTO(talentService.searchTalent(query, type)));
     }
 
     @GetMapping("/cv/{talentId}")

@@ -40,20 +40,19 @@ project(':auth') {
     }
 }
 
-//project(':calendly') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-//
-//
-//
-//project(':interviews') {
-//    dependencies {
-//        implementation project(':common')
-//    }
-//}
-//
+project(':calendly') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':interviews') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':talents')
+    }
+}
+
 
 
 project(':talents') {
@@ -69,9 +68,9 @@ tasks.named('test') {
 
 dependencies {
     implementation project(':auth')
-//    implementation project(':calendly')
+    implementation project(':calendly')
     implementation project(':common')
-//    implementation project(':interviews')
+    implementation project(':interviews')
     implementation project(':onboarding-service')
     implementation project(':talents')
 

@@ -1,8 +1,8 @@
 package edu.aua.interviews.service.impl;
 
 import edu.aua.interviews.excaption.UserNotFoundException;
-import edu.aua.interviews.persistance.entity.User;
-import edu.aua.interviews.persistance.repositories.UserRepository;
+import edu.aua.interviews.persistance.User;
+import edu.aua.interviews.repositories.UserRepository;
 import edu.aua.interviews.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,8 +17,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public User findById(Long id) {
-        return this.userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("No user found by this id", id));
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("No user found by this id", id));
     }
 }
 

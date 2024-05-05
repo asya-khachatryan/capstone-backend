@@ -1,11 +1,8 @@
 package edu.aua.interviews.service;
 
-import edu.aua.interviews.persistance.enums.InterviewType;
-import edu.aua.interviews.service.dto.InterviewFeedbackRequestDTO;
-import edu.aua.interviews.service.dto.InterviewFeedbackResponseDTO;
+import edu.aua.interviews.persistance.InterviewType;
+import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
 
 public interface FeedbackService {
-
-    InterviewFeedbackResponseDTO create(InterviewFeedbackRequestDTO feedbackRequestDTO, InterviewType interviewType, Long talentId);
-
+    InterviewFeedbackDTO create(InterviewFeedbackDTO feedbackRequestDTO, InterviewType interviewType, Long talentId);
 }

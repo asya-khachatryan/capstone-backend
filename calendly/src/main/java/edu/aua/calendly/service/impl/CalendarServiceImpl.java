@@ -7,8 +7,6 @@ import edu.aua.calendly.service.CalendarService;
 import edu.aua.calendly.service.dto.EventResponse;
 import edu.aua.calendly.service.dto.WebhookDto;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

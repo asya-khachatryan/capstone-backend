@@ -2,8 +2,8 @@ package edu.aua.interviews.converter.impl;
 
 import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.converter.UserConverter;
-import edu.aua.interviews.persistance.entity.User;
-import edu.aua.interviews.service.dto.UserDTO;
+import edu.aua.interviews.persistance.User;
+import edu.aua.interviews.persistance.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

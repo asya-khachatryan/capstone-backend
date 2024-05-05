@@ -1,7 +1,6 @@
 package edu.aua.common.service;
 
-import edu.aua.common.model.Mail;
-import edu.aua.common.service.EmailService;
+import edu.aua.common.model.EmailDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.log4j.Log4j2;
@@ -26,22 +25,22 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendEmail(final Mail mail) {
+    public void sendEmail(final EmailDTO emailDTO) {
         log.info("Started sendEmail");
-        final SimpleMailMessage simpleMailMessage = buildMailMessage(mail);
+        final SimpleMailMessage simpleMailMessage = buildMailMessage(emailDTO);
         javaMailSender.send(simpleMailMessage);
         log.info("Finished sendEmail");
     }
 
     @Override
-    public void sendEmailHtml(Mail mail) {
-        log.info("Started sendEmail with html body {}", mail);
+    public void sendEmailHtml(EmailDTO emailDTO) {
+        log.info("Started sendEmail with html body {}", emailDTO);
         final MimeMessage msg = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(msg);
-            helper.setTo(mail.getEmailTo());
-            helper.setSubject(mail.getSubject());
-            helper.setText(mail.getText(), true);
+            helper.setTo(emailDTO.getEmailTo());
+            helper.setSubject(emailDTO.getSubject());
+            helper.setText(emailDTO.getText(), true);
         } catch (
                 MessagingException e) {
             log.error("Error when trying to attach file", e);
@@ -52,14 +51,14 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
-    public void sendMailWithAttachments(final Mail mail, MultipartFile multipart) {
+    public void sendMailWithAttachments(final EmailDTO emailDTO, MultipartFile multipart) {
         log.info("In sendMailWithAttachment");
         MimeMessage msg = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(msg, true);
-            helper.setTo(mail.getEmailTo());
-            helper.setSubject(mail.getSubject());
-            helper.setText(mail.getText(), true);
+            helper.setTo(emailDTO.getEmailTo());
+            helper.setSubject(emailDTO.getSubject());
+            helper.setText(emailDTO.getText(), true);
             helper.addAttachment(multipart.getName(), multipart);
             log.debug("Added a file attachment: {}", multipart.getName());
         } catch (MessagingException e) {
@@ -69,13 +68,13 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(msg);
     }
 
-    private SimpleMailMessage buildMailMessage(final Mail mail) {
+    private SimpleMailMessage buildMailMessage(final EmailDTO emailDTO) {
         log.info("Started creating mail message");
         final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom(setFrom);
-        simpleMailMessage.setTo(mail.getEmailTo());
-        simpleMailMessage.setSubject(mail.getSubject());
-        simpleMailMessage.setText(mail.getText());
+        simpleMailMessage.setTo(emailDTO.getEmailTo());
+        simpleMailMessage.setSubject(emailDTO.getSubject());
+        simpleMailMessage.setText(emailDTO.getText());
         log.info("Finished creating mail message");
         return simpleMailMessage;
     }

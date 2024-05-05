@@ -1,13 +1,13 @@
 package edu.aua.common.service;
 
-import edu.aua.common.model.Mail;
+import edu.aua.common.model.EmailDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface EmailService {
 
-    void sendEmail(Mail mail);
+    void sendEmail(EmailDTO emailDTO);
 
-    void sendEmailHtml(Mail mail);
+    void sendEmailHtml(EmailDTO emailDTO);
 
-    void sendMailWithAttachments(Mail mail, MultipartFile multipartFile);
+    void sendMailWithAttachments(EmailDTO emailDTO, MultipartFile multipartFile);
 }

@@ -1,17 +1,17 @@
 package edu.aua.interviews.converter;
 
-import edu.aua.interviews.persistance.entity.interview.InterviewFeedback;
-import edu.aua.interviews.service.dto.InterviewFeedbackRequestDTO;
-import edu.aua.interviews.service.dto.InterviewFeedbackResponseDTO;
+import edu.aua.interviews.persistance.InterviewFeedback;
+import edu.aua.interviews.persistance.dto.InterviewFeedbackRequestDTO;
+import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
 
 
 import java.util.List;
 
 public interface FeedbackConverter {
 
-    List<InterviewFeedbackResponseDTO> bulkConvertToDTO(List<InterviewFeedback> interviewFeedbacks);
+    List<InterviewFeedbackDTO> bulkConvertToDTO(List<InterviewFeedback> interviewFeedbacks);
 
-    InterviewFeedbackResponseDTO convertToDTO(InterviewFeedback interviewFeedback);
+    InterviewFeedbackDTO convertToDTO(InterviewFeedback interviewFeedback);
 
     List<InterviewFeedback> bulkConvertToEntity(List<InterviewFeedbackRequestDTO> interviewFeedbacks);
 
