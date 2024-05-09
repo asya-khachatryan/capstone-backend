@@ -1,12 +1,12 @@
 package edu.aua.talents.service.impl;
 
+import edu.aua.common.exception.NotFoundException;
 import edu.aua.common.service.EmailService;
 import edu.aua.common.util.TimeService;
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.exception.TalentNotFoundException;
-import edu.aua.talents.persistance.TalentRepository;
-import edu.aua.talents.persistance.entity.Talent;
-import edu.aua.talents.persistance.enums.TalentStatus;
+import edu.aua.talents.repository.TalentRepository;
+import edu.aua.talents.persistance.Talent;
+import edu.aua.talents.persistance.TalentStatus;
 import edu.aua.talents.service.AmazonClientService;
 import edu.aua.talents.service.SpecializationService;
 import edu.aua.talents.service.TalentService;
@@ -27,8 +27,6 @@ import static edu.aua.talents.service.utils.EmailGenerator.generateEmail;
 @Service
 @Slf4j
 public class TalentServiceImpl implements TalentService {
-
-
     private final TalentRepository talentRepository;
     private final SpecializationService specializationService;
     private final TalentConverter talentConverter;
@@ -62,14 +60,14 @@ public class TalentServiceImpl implements TalentService {
     public Talent findByIdOrThrow(Long id) {
         log.info("In findById Talent requested to get the talent with id {}", id);
         return talentRepository.findById(id)
-                .orElseThrow(() -> new TalentNotFoundException("No talent found by this id", id));
+                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Talent findByEmailOrThrow(String email) throws TalentNotFoundException {
+    public Talent findByEmailOrThrow(String email) throws NotFoundException {
         return talentRepository.findByEmail(email)
-                .orElseThrow(() -> new TalentNotFoundException("No talent found by this email", email));
+                .orElseThrow(() -> new NotFoundException("No talent found by this email", email));
     }
 
     @Override
@@ -95,7 +93,7 @@ public class TalentServiceImpl implements TalentService {
     public Talent update(Long id, TalentRequestDTO talentDTO) {
         log.info("Requested to update a talent with id {}", id);
         final Talent talent = talentRepository.findById(id)
-                .orElseThrow(() -> new TalentNotFoundException("No talent found by this id", id));
+                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
         talent.setName(talentDTO.getName());
         talent.setSurname(talentDTO.getSurname());
         talent.setEmail(talentDTO.getEmail());
@@ -110,7 +108,7 @@ public class TalentServiceImpl implements TalentService {
     public boolean deleteById(Long id) {
         log.info("Requested to delete a talent with id {}", id);
         if (!talentRepository.existsById(id)) {
-            throw new TalentNotFoundException("No talent found by this id", id);
+            throw new NotFoundException("No talent found by this id", id);
         }
         talentRepository.deleteById(id);
         log.info("In deleteById Talent talent with id {} successfully deleted", id);
@@ -123,7 +121,7 @@ public class TalentServiceImpl implements TalentService {
         TalentStatus status = talentRequestDTO.getStatus();
         log.info("Requested to update status to {} of a talent with email {}", status, email);
         final Talent talent = talentRepository.findByEmail(email)
-                .orElseThrow(() -> new TalentNotFoundException("No talent found by this email", email));
+                .orElseThrow(() -> new NotFoundException("No talent found by this email", email));
         talent.setTalentStatus(TalentStatus.valueOf(status.name()));
         log.info("In updateStatus Talent the status of talent with email {} successfully updated to {}", email, status);
         final Talent savedTalent = talentRepository.save(talent);
@@ -140,7 +138,7 @@ public class TalentServiceImpl implements TalentService {
     @Override
     public String addCVForTalent(Long id, MultipartFile file) throws IOException {
         final Talent talent = talentRepository.findById(id)
-                .orElseThrow(() -> new TalentNotFoundException("No talent found by this id", id));
+                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
         String cvFileName = amazonClientService.uploadFile(file, talent);
         talent.setCvFileName(cvFileName);
         talentRepository.save(talent);

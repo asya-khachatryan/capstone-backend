@@ -21,7 +21,7 @@ public class JWTUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final User user = this.userService.findByUsername(username);
-        log.debug("IN loadUserByUsername  - user: with username: {} successfully loaded by ", username);
+        log.debug("In loadUserByUsername  - user: with username: {} successfully loaded by ", username);
         return JWTUserFactory.create(user);
     }
 }

@@ -1,7 +1,6 @@
 package edu.aua.interviews.converter;
 
 import edu.aua.interviews.persistance.InterviewFeedback;
-import edu.aua.interviews.persistance.dto.InterviewFeedbackRequestDTO;
 import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
 
 
@@ -13,7 +12,7 @@ public interface FeedbackConverter {
 
     InterviewFeedbackDTO convertToDTO(InterviewFeedback interviewFeedback);
 
-    List<InterviewFeedback> bulkConvertToEntity(List<InterviewFeedbackRequestDTO> interviewFeedbacks);
+    List<InterviewFeedback> bulkConvertToEntity(List<InterviewFeedbackDTO> interviewFeedbacks);
 
-    InterviewFeedback convertToEntity(InterviewFeedbackRequestDTO interviewFeedbackReqDTO);
+    InterviewFeedback convertToEntity(InterviewFeedbackDTO interviewFeedbackReqDTO);
 }

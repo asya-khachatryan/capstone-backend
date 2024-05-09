@@ -26,7 +26,6 @@ public class JWTTokenProvider {
         this.appProperties = appProperties;
     }
 
-
     public String createToken(final Authentication authentication) {
         final JWTUser userPrincipal = (JWTUser) authentication.getPrincipal();
         final Date now = new Date();

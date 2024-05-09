@@ -1,7 +1,7 @@
 package edu.aua.calendly.service;
 
-import edu.aua.calendly.service.dto.EventResponse;
-import edu.aua.calendly.service.dto.WebhookDto;
+import edu.aua.calendly.dto.EventResponse;
+import edu.aua.calendly.dto.WebhookDto;
 
 public interface CalendarService {
 

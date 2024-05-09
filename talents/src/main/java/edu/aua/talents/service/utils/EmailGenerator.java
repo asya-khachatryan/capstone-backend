@@ -1,7 +1,7 @@
 package edu.aua.talents.service.utils;
 
 import edu.aua.common.model.EmailDTO;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 
 public class EmailGenerator {
     public static EmailDTO generateEmail(Talent talent) {

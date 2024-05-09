@@ -1,6 +1,6 @@
 package edu.aua.talents.converter;
 
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
 

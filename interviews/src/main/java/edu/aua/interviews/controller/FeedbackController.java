@@ -1,8 +1,7 @@
 package edu.aua.interviews.controller;
 
-import edu.aua.interviews.persistance.InterviewType;
-import edu.aua.interviews.service.FeedbackService;
 import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
+import edu.aua.interviews.service.FeedbackService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ public class FeedbackController {
     @PostMapping
     public ResponseEntity<InterviewFeedbackDTO> create(
             @RequestBody @Valid InterviewFeedbackDTO feedbackRequestDTO,
-            @RequestParam InterviewType interviewType, @RequestParam Long talentId) {
-        return ResponseEntity.ok(feedbackService.create(feedbackRequestDTO, interviewType, talentId));
+            @RequestParam Long interviewID) {
+        return ResponseEntity.ok(feedbackService.create(feedbackRequestDTO, interviewID));
     }
 }

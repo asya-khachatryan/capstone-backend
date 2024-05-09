@@ -2,6 +2,7 @@ package edu.aua.auth.service;
 
 import edu.aua.auth.config.security.JWTTokenProvider;
 import edu.aua.auth.dto.AuthRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,14 +14,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider tokenProvider;
-
-    public AuthServiceImpl(AuthenticationManager authenticationManager, JWTTokenProvider tokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.tokenProvider = tokenProvider;
-    }
 
     @Override
     public String login(final AuthRequest loginRequest) {

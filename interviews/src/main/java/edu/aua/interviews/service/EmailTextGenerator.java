@@ -1,7 +1,7 @@
 package edu.aua.interviews.service;
 
 import edu.aua.interviews.persistance.EmailTextType;
-import edu.aua.interviews.persistance.User;
+import edu.aua.interviews.persistance.Interviewer;
 import edu.aua.talents.persistance.entity.Talent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ public class EmailTextGenerator {
         return subject;
     }
 
-    public String getEmailText(Talent talent, User user, EmailTextType emailTextType, URI uri) {
+    public String getEmailText(Talent talent, Interviewer interviewer, EmailTextType emailTextType, URI uri) {
         Context thymeleafContext = new Context();
         switch (emailTextType) {
             case TO_TALENT_FIRST:
@@ -35,7 +35,7 @@ public class EmailTextGenerator {
                 return thymeleafTemplateEngine.process("mail_to_talent_again.html", thymeleafContext);
 
             case TO_USER:
-                thymeleafContext.setVariable("name", user.getFirstName());
+                thymeleafContext.setVariable("name", interviewer.getFirstName());
                 return thymeleafTemplateEngine.process("mail_to_user.html", thymeleafContext);
 
             default:

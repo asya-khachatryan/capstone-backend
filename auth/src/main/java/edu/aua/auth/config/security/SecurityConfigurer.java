@@ -26,9 +26,8 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfigurer {
-    private static final String CSRF_HEADER_NAME = "X-CSRF-TOKEN";
     private static final String LOGIN_ENDPOINT = "/auth/**";
-    private static final String REGISTER_ENDPOINT = "/user/**";
+    private static final String REGISTER_ENDPOINT = "/user/register";
     private static final String ADMIN_ENDPOINT = "/admin/**";
 
 
@@ -78,6 +77,9 @@ public class SecurityConfigurer {
                 .cors(cors -> cors.configurationSource(source))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .logout(logout -> logout.logoutUrl("/logout").deleteCookies("JSESSIONID", "accessToken")
+                        .logoutSuccessHandler((req, response, auth) -> response.setStatus(200)).permitAll(false)
+                )
                 .authorizeHttpRequests(authReq -> authReq.requestMatchers(LOGIN_ENDPOINT).permitAll())
                 .authorizeHttpRequests(authReq -> authReq.requestMatchers(REGISTER_ENDPOINT).permitAll())
 //                .authorizeHttpRequests(authReq -> authReq.requestMatchers(ADMIN_ENDPOINT).hasRole("ADMIN"))

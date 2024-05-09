@@ -1,8 +1,7 @@
 package edu.aua.calendly.controller;
 
 import edu.aua.calendly.service.CalendarService;
-import edu.aua.calendly.service.dto.WebhookDto;
-import org.springframework.http.ResponseEntity;
+import edu.aua.calendly.dto.WebhookDto;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

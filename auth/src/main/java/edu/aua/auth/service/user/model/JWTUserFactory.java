@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 public final class JWTUserFactory {
 
+    private JWTUserFactory() {
+    }
+
     public static JWTUser create(User user) {
         return new JWTUser(
                 user.getId(),
@@ -24,7 +27,7 @@ public final class JWTUserFactory {
 
     private static List<GrantedAuthority> mapToGrandAuthorities(Set<Role> roles) {
         return roles.stream()
-                .map(o -> new SimpleGrantedAuthority(o.getRoleType().name()))
+                .map(o -> new SimpleGrantedAuthority(o.getName().name()))
                 .collect(Collectors.toList());
     }
 }

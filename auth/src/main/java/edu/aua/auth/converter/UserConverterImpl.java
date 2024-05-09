@@ -1,6 +1,5 @@
 package edu.aua.auth.converter;
 
-import edu.aua.auth.converter.UserConverter;
 import edu.aua.auth.dto.UserDTO;
 import edu.aua.auth.persistance.User;
 import org.springframework.stereotype.Component;

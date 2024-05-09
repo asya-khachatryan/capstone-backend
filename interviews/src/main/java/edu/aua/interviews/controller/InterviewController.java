@@ -1,9 +1,10 @@
 package edu.aua.interviews.controller;
 
 import edu.aua.interviews.persistance.Interview;
-import edu.aua.interviews.service.InterviewService;
 import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
 import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
+import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
+import edu.aua.interviews.service.InterviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class InterviewController {
     private final InterviewService interviewService;
 
     @PostMapping
-    public ResponseEntity<Boolean> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO) {
+    public ResponseEntity<InterviewResponseDTO> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO) {
         return ResponseEntity.ok(interviewService.startInterviewPreparation(interviewRequestDTO));
     }
 

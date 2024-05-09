@@ -2,12 +2,12 @@ package edu.aua.interviews.persistance.dto;
 
 import edu.aua.interviews.persistance.InterviewStatus;
 import edu.aua.interviews.persistance.InterviewType;
+import edu.aua.talents.service.dto.TalentResponseDTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -15,8 +15,10 @@ public class InterviewResponseDTO {
 
     private Long id;
 
-    @DateTimeFormat
-    private Date date;//ste anel start u end
+    //    @DateTimeFormat
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
 
     @NotEmpty
     private InterviewType interviewType;
@@ -25,14 +27,11 @@ public class InterviewResponseDTO {
     private InterviewStatus interviewStatus;
 
     @NotNull
-    private TalentDTO talentDTO;
+    private TalentResponseDTO talentDTO;
 
     @NotNull
-    private List<UserDTO> userDTO;
+    private List<InterviewerDTO> interviewerDTO;
 
     @NotNull
     private InterviewFeedbackDTO interviewFeedback;
-
-    @NotNull
-    private SpecializationDTO specialization;
 }

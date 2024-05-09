@@ -2,7 +2,7 @@ package edu.aua.talents.converter.impl;
 
 import edu.aua.talents.converter.SpecializationConverter;
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.SpecializationService;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;

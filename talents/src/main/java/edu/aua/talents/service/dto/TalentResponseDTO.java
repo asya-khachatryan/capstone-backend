@@ -1,6 +1,6 @@
 package edu.aua.talents.service.dto;
 
-import edu.aua.talents.persistance.enums.TalentStatus;
+import edu.aua.talents.persistance.TalentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -6,6 +6,7 @@ import edu.aua.auth.dto.UserDTO;
 import edu.aua.auth.persistance.User;
 import edu.aua.auth.repository.RoleRepository;
 import edu.aua.auth.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,22 +15,12 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserConverter userConverter;
     private final PasswordEncoder passwordEncoder;
-
-
-    public UserServiceImpl(UserRepository userRepository,
-                           RoleRepository roleRepository,
-                           UserConverter userConverter,
-                           PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userConverter = userConverter;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public User update(String username, UserDTO userDTO) {
@@ -38,7 +29,6 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-
         return user;
     }
 
@@ -52,7 +42,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         final User user = this.userRepository.findByUsername(username);
-
         log.debug("IN findByUsername  - user: {} found by username: {}", user, username);
         return user;
     }

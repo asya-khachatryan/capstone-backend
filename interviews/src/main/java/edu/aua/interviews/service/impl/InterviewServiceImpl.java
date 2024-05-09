@@ -9,10 +9,11 @@ import edu.aua.interviews.persistance.Interview;
 import edu.aua.interviews.persistance.InterviewStatus;
 import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
 import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
+import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
 import edu.aua.interviews.repositories.InterviewRepository;
 import edu.aua.interviews.service.EmailTextGenerator;
 import edu.aua.interviews.service.InterviewService;
-import edu.aua.interviews.service.UserService;
+import edu.aua.interviews.service.InterviewerService;
 import edu.aua.talents.persistance.entity.Talent;
 import edu.aua.talents.service.TalentService;
 import lombok.RequiredArgsConstructor;
@@ -31,7 +32,7 @@ public class InterviewServiceImpl implements InterviewService {
     private final InterviewRepository interviewRepository;
     private final InterviewConverter interviewConverter;
     private final TalentService talentService;
-    private final UserService userService;
+    private final InterviewerService interviewerService;
     private final EmailService emailService;
     private final EmailTextGenerator mailTextGenerator;
 
@@ -41,17 +42,16 @@ public class InterviewServiceImpl implements InterviewService {
     private String rejectedResponse;
 
     @Override
-    public Boolean startInterviewPreparation(InterviewRequestDTO interviewRequestDTO) {
+    public InterviewResponseDTO startInterviewPreparation(InterviewRequestDTO interviewRequestDTO) {
         Interview interview = new Interview();
         interview.setTalent(talentService.findByIdOrThrow(interviewRequestDTO.getTalentID()));
-        interview.setUsers(interviewRequestDTO.getUserIDs().stream().map(userService::findById).toList());
+        interview.setInterviewers(interviewRequestDTO.getUserIDs().stream().map(interviewerService::findById).toList());
         interview.setInterviewStatus(InterviewStatus.IN_PREPARATION);
         interview.setInterviewType(interviewRequestDTO.getInterviewType());
-        //todo specialization??
         String emailText = mailTextGenerator.getEmailText(interview.getTalent(), null, EmailTextType.TO_TALENT_FIRST, interview.getUrl());
         sendEmail(interview.getTalent().getEmail(), EmailTextGenerator.getSubject(), emailText);
         interviewRepository.save(interview);
-        return true;
+        return interviewConverter.convertToDTO(interview);
     }
 
     private void sendEmail(String email, String subject, String text) {
@@ -86,7 +86,7 @@ public class InterviewServiceImpl implements InterviewService {
     }
 
     private void sendRejectionEmailUsers(Interview interview) {
-        interview.getUsers().forEach(u -> {
+        interview.getInterviewers().forEach(u -> {
             String emailText = mailTextGenerator.getEmailText(null, u, EmailTextType.TO_USER, null);
             sendEmail(u.getEmail(), EmailTextGenerator.getSubject(), emailText);
         });

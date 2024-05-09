@@ -3,7 +3,6 @@ package edu.aua.interviews.persistance;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.aua.talents.persistance.entity.Specialization;
 import edu.aua.talents.persistance.entity.Talent;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -30,7 +29,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Entity
-@Table(name = "interview", schema = "interview_flow")
+@Table(name = "interview")
 @Data
 public class Interview {
 
@@ -64,15 +63,9 @@ public class Interview {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_interviews",
+    @JoinTable(name = "interviewer_interviews",
             joinColumns = @JoinColumn(name = "interview_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"))
-    private List<User> users = new ArrayList<>();
-
-    //todo???
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "specialization_id")
-    @JsonBackReference
-    private Specialization specialization;
+            inverseJoinColumns = @JoinColumn(name = "interviewer_id", referencedColumnName = "id"))
+    private List<Interviewer> interviewers = new ArrayList<>();
 }
 

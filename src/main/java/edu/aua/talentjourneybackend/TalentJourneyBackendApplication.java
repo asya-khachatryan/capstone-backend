@@ -1,6 +1,6 @@
 package edu.aua.talentjourneybackend;
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -11,7 +11,7 @@ import org.springframework.core.env.StandardEnvironment;
 
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @ComponentScan({"edu.aua"})
-@Log4j2
+@Slf4j
 public class TalentJourneyBackendApplication {
 
     public static void main(String[] args) {

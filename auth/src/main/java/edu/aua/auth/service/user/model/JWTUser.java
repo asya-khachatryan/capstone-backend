@@ -1,10 +1,14 @@
 package edu.aua.auth.service.user.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
+@Data
+@AllArgsConstructor
 public class JWTUser implements UserDetails {
 
     private final Long id;
@@ -14,56 +18,6 @@ public class JWTUser implements UserDetails {
     private final String email;
     private final String password;
     private final Collection<? extends GrantedAuthority> authorities;
-
-    public JWTUser(Long id,
-                   String username,
-                   String firstName,
-                   String lastName,
-                   String email,
-                   String password,
-                   Collection<? extends GrantedAuthority> authorities
-                    ) {
-        this.id = id;
-        this.username = username;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = password;
-        this.authorities = authorities;
-    }
-
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return username;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
 
     @Override
     public boolean isAccountNonExpired() {

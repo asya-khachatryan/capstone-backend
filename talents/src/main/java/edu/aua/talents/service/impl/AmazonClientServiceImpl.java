@@ -11,27 +11,26 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import edu.aua.talents.persistance.entity.Specialization;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Specialization;
+import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.AmazonClientService;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.log4j.Log4j2;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
-@Log4j2
+@Slf4j
 @PropertySource("classpath:talents.properties")
 public class AmazonClientServiceImpl implements AmazonClientService {
 

@@ -1,9 +1,8 @@
 package edu.aua.interviews.converter.impl;
 
-import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.converter.FeedbackConverter;
+import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.persistance.InterviewFeedback;
-import edu.aua.interviews.persistance.dto.InterviewFeedbackRequestDTO;
 import edu.aua.interviews.persistance.dto.InterviewFeedbackDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,7 +24,6 @@ public class FeedbackConverterImpl implements FeedbackConverter {
     @Override
     public InterviewFeedbackDTO convertToDTO(InterviewFeedback interviewFeedback) {
         final InterviewFeedbackDTO feedbackDTO = new InterviewFeedbackDTO();
-
         feedbackDTO.setId(interviewFeedback.getId());
         feedbackDTO.setTopic(interviewFeedback.getTopic());
         feedbackDTO.setFeedback(interviewFeedback.getFeedback());
@@ -35,13 +33,13 @@ public class FeedbackConverterImpl implements FeedbackConverter {
     }
 
     @Override
-    public List<InterviewFeedback> bulkConvertToEntity(List<InterviewFeedbackRequestDTO> interviewFeedbacks) {
+    public List<InterviewFeedback> bulkConvertToEntity(List<InterviewFeedbackDTO> interviewFeedbacks) {
         return interviewFeedbacks.stream().map(this::convertToEntity).collect(Collectors.toList());
 
     }
 
     @Override
-    public InterviewFeedback convertToEntity(InterviewFeedbackRequestDTO interviewFeedbackReqDTO) {
+    public InterviewFeedback convertToEntity(InterviewFeedbackDTO interviewFeedbackReqDTO) {
         if (interviewFeedbackReqDTO == null) {
             return null;
         }

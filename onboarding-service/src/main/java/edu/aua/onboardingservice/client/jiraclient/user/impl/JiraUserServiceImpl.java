@@ -3,7 +3,7 @@ package edu.aua.onboardingservice.client.jiraclient.user.impl;
 import edu.aua.onboardingservice.client.jiraclient.user.JiraUserService;
 import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import edu.aua.onboardingservice.config.JiraIntegrationProperties;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@Log4j2
+@Slf4j
 public class JiraUserServiceImpl implements JiraUserService {
     private final RestTemplate restTemplate;
     private final JiraIntegrationProperties properties;
@@ -46,7 +46,7 @@ public class JiraUserServiceImpl implements JiraUserService {
         final HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         final String finalUrl = properties.getUri() + "/user/";
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(finalUrl)
-            .queryParam("accountId", accountId);
+                .queryParam("accountId", accountId);
         restTemplate.exchange(builder.toUriString(), HttpMethod.DELETE, httpEntity, Void.class);
         log.info("Finished deleteUser method");
     }

@@ -3,7 +3,7 @@ package edu.aua.onboardingservice.client.jiraclient.sprint.impl;
 import edu.aua.onboardingservice.client.jiraclient.sprint.JiraSprintService;
 import edu.aua.onboardingservice.client.jiraclient.sprint.dto.JiraSprintDto;
 import edu.aua.onboardingservice.config.JiraIntegrationProperties;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Log4j2
+@Slf4j
 public class JiraSprintServiceImpl implements JiraSprintService {
     private final RestTemplate restTemplate;
     private final JiraIntegrationProperties properties;

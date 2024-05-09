@@ -1,9 +1,14 @@
 package edu.aua.onboardingservice.client.jiraclient.project.impl;
 
 import edu.aua.onboardingservice.client.jiraclient.project.JiraProjectService;
-import edu.aua.onboardingservice.client.jiraclient.project.dto.*;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.AssignUserProjectRoleDto;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectBoardDto;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectRequestDto;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectResponseDto;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectRoleDto;
+import edu.aua.onboardingservice.client.jiraclient.project.dto.ProjectRoleResponseDto;
 import edu.aua.onboardingservice.config.JiraIntegrationProperties;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
-@Log4j2
+@Slf4j
 public class JiraProjectServiceImpl implements JiraProjectService {
 
     private final RestTemplate restTemplate;

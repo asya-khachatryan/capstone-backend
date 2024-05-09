@@ -22,8 +22,6 @@ public class InterviewRequestDTO {
     @NotNull
     private Long talentID;
 
-    @NotNull
-    private Long specializationID;
-
+    @NotBlank
     private InterviewType interviewType;
 }

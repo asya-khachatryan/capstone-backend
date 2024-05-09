@@ -1,7 +1,7 @@
 package edu.aua.calendly.client;
 
-import edu.aua.calendly.service.dto.EventDto;
-import edu.aua.calendly.service.dto.WebhookDto;
+import edu.aua.calendly.dto.EventDto;
+import edu.aua.calendly.dto.WebhookDto;
 
 public interface InterviewClient {
 
