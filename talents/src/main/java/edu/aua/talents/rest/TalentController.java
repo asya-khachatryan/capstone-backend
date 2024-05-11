@@ -1,7 +1,6 @@
 package edu.aua.talents.rest;
 
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.TalentService;
 import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
@@ -46,10 +45,9 @@ public class TalentController {
     }
 
     @GetMapping("/page")
-    //todo convert to dto
-    public ResponseEntity<Page<Talent>> getAll(@RequestParam int page,
-                                               @RequestParam int size,
-                                               @RequestParam String sort) {
+    public ResponseEntity<Page<TalentResponseDTO>> getAll(@RequestParam int page,
+                                                          @RequestParam int size,
+                                                          @RequestParam String sort) {
 
         if (sort.isEmpty()) {
             return ResponseEntity.ok(talentService.findAll(PageRequest.of(page, size)));

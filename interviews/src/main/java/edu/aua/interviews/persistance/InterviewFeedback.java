@@ -15,7 +15,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "interviewFeedback", schema = "interview_flow")
+@Table(name = "interviewFeedback")
 @Data
 @EqualsAndHashCode
 public class InterviewFeedback {
@@ -32,7 +32,6 @@ public class InterviewFeedback {
     @Column(name = "score")
     private Integer score;
 
-    @JsonIgnore
     @OneToOne
     @JoinColumn(name = "id")
     @MapsId

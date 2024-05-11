@@ -14,7 +14,7 @@ public interface TalentService {
 
     List<Talent> findAll();
 
-    Page<Talent> findAll(Pageable page);
+    Page<TalentResponseDTO> findAll(Pageable page);
 
     Talent findByIdOrThrow(Long id);
 

@@ -1,4 +1,4 @@
-package edu.aua.talents.service.utils;
+package edu.aua.talents.utils;
 
 import edu.aua.common.model.EmailDTO;
 import edu.aua.talents.persistance.Talent;

@@ -4,9 +4,9 @@ import edu.aua.common.exception.NotFoundException;
 import edu.aua.common.service.EmailService;
 import edu.aua.common.util.TimeService;
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.repository.TalentRepository;
 import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.persistance.TalentStatus;
+import edu.aua.talents.repository.TalentRepository;
 import edu.aua.talents.service.AmazonClientService;
 import edu.aua.talents.service.SpecializationService;
 import edu.aua.talents.service.TalentService;
@@ -14,6 +14,7 @@ import edu.aua.talents.service.dto.TalentRequestDTO;
 import edu.aua.talents.service.dto.TalentResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-import static edu.aua.talents.service.utils.EmailGenerator.generateEmail;
+import static edu.aua.talents.utils.EmailGenerator.generateEmail;
 
 @Service
 @Slf4j
@@ -51,8 +52,10 @@ public class TalentServiceImpl implements TalentService {
     }
 
     @Override
-    public Page<Talent> findAll(Pageable page) {
-        return talentRepository.findAll(page);
+    public Page<TalentResponseDTO> findAll(Pageable page) {
+        Page<Talent> all = talentRepository.findAll(page);
+        return new PageImpl<>(talentConverter.bulkConvertToDTO(all.getContent()),
+                all.getPageable(), all.getTotalElements());
     }
 
     @Override
