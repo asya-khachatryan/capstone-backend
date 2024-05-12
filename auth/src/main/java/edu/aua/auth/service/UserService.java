@@ -12,7 +12,7 @@ public interface UserService {
 
     User update(String username, UserDTO userDTO);
 
-    User findByUsername(String name);
+    User findByUsernameOrThrow(String name);
 
     User findById(Long id);
 

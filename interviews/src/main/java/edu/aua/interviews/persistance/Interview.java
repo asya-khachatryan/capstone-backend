@@ -3,7 +3,7 @@ package edu.aua.interviews.persistance;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,8 +52,8 @@ public class Interview {
     @Enumerated(EnumType.STRING)
     private InterviewStatus interviewStatus;
 
-    @OneToOne(mappedBy = "interview", cascade = CascadeType.ALL,
-            orphanRemoval = true)
+    @OneToOne(mappedBy = "interview", cascade = CascadeType.ALL)
+    @JoinColumn(name = "interview_feedback_id")
     private InterviewFeedback interviewFeedback;
 
     @ManyToOne(cascade = CascadeType.ALL)
@@ -63,7 +63,7 @@ public class Interview {
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "interviewer_interviews",
+    @JoinTable(name = "interview_interviewers",
             joinColumns = @JoinColumn(name = "interview_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "interviewer_id", referencedColumnName = "id"))
     private List<Interviewer> interviewers = new ArrayList<>();

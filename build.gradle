@@ -46,13 +46,21 @@ project(':calendly') {
     }
 }
 
-//project(':interviews') {
-//    dependencies {
-//        implementation project(':common')
-//        implementation project(':talents')
-//    }
-//}
+project(':interviews') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':talents')
+    }
+}
 
+project(':onboarding-service') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':auth')
+        implementation project(':talents')
+
+    }
+}
 
 
 project(':talents') {
@@ -70,7 +78,7 @@ dependencies {
     implementation project(':auth')
     implementation project(':calendly')
     implementation project(':common')
-//    implementation project(':interviews')
+    implementation project(':interviews')
     implementation project(':onboarding-service')
     implementation project(':talents')
 

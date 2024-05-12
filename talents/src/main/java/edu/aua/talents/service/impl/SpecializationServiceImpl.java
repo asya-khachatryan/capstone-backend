@@ -6,7 +6,7 @@ import edu.aua.talents.converter.SpecializationConverter;
 import edu.aua.talents.repository.SpecializationRepository;
 import edu.aua.talents.persistance.Specialization;
 import edu.aua.talents.service.SpecializationService;
-import edu.aua.talents.service.dto.SpecializationRequestDTO;
+import edu.aua.talents.persistance.dto.SpecializationRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

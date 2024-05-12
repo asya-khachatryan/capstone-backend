@@ -1,23 +1,18 @@
-package edu.aua.talents.service.dto;
+package edu.aua.talents.persistance.dto;
 
 import edu.aua.talents.persistance.TalentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TalentResponseDTO {
-    private Long id;
+public class TalentRequestDTO {
     private String name;
     private String surname;
     private String email;
     private String phoneNumber;
-    private SpecializationResponseDTO specialization;
+    private Long specializationId;
     private TalentStatus status;
-    private String cvFileName;
-    private LocalDateTime dateApplied;
 }

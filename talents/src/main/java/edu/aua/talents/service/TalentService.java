@@ -1,8 +1,8 @@
 package edu.aua.talents.service;
 
 import edu.aua.talents.persistance.Talent;
-import edu.aua.talents.service.dto.TalentRequestDTO;
-import edu.aua.talents.service.dto.TalentResponseDTO;
+import edu.aua.talents.persistance.dto.TalentRequestDTO;
+import edu.aua.talents.persistance.dto.TalentResponseDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

@@ -53,4 +53,8 @@ public class User extends BaseEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 
     private Set<Role> roles = new HashSet<>();
+
+    public String getFullName() {
+        return this.firstName + " " + this.lastName;
+    }
 }

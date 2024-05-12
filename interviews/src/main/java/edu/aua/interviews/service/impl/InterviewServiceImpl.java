@@ -14,11 +14,12 @@ import edu.aua.interviews.repositories.InterviewRepository;
 import edu.aua.interviews.service.EmailTextGenerator;
 import edu.aua.interviews.service.InterviewService;
 import edu.aua.interviews.service.InterviewerService;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.TalentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@PropertySource("classpath:/interview-service.properties")
 public class InterviewServiceImpl implements InterviewService {
 
     private final InterviewRepository interviewRepository;
@@ -45,7 +47,7 @@ public class InterviewServiceImpl implements InterviewService {
     public InterviewResponseDTO startInterviewPreparation(InterviewRequestDTO interviewRequestDTO) {
         Interview interview = new Interview();
         interview.setTalent(talentService.findByIdOrThrow(interviewRequestDTO.getTalentID()));
-        interview.setInterviewers(interviewRequestDTO.getUserIDs().stream().map(interviewerService::findById).toList());
+        interview.setInterviewers(interviewRequestDTO.getUserIDs().stream().map(interviewerService::findByIdOrThrow).toList());
         interview.setInterviewStatus(InterviewStatus.IN_PREPARATION);
         interview.setInterviewType(interviewRequestDTO.getInterviewType());
         String emailText = mailTextGenerator.getEmailText(interview.getTalent(), null, EmailTextType.TO_TALENT_FIRST, interview.getUrl());

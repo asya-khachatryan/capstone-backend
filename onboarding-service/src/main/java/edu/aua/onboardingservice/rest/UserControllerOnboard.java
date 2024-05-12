@@ -60,5 +60,4 @@ public class UserControllerOnboard {
     public void deleteMentor(@PathVariable Long id) {
         this.userFacade.deleteMentor(id);
     }
-
 }

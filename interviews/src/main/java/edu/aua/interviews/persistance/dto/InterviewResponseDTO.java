@@ -2,7 +2,7 @@ package edu.aua.interviews.persistance.dto;
 
 import edu.aua.interviews.persistance.InterviewStatus;
 import edu.aua.interviews.persistance.InterviewType;
-import edu.aua.talents.service.dto.TalentResponseDTO;
+import edu.aua.talents.persistance.dto.TalentResponseDTO;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

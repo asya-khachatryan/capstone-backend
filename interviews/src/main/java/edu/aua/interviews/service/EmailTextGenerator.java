@@ -2,7 +2,7 @@ package edu.aua.interviews.service;
 
 import edu.aua.interviews.persistance.EmailTextType;
 import edu.aua.interviews.persistance.Interviewer;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;

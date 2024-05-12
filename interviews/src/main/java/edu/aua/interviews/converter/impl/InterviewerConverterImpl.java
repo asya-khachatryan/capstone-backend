@@ -1,44 +1,36 @@
 package edu.aua.interviews.converter.impl;
 
-import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.converter.InterviewerConverter;
 import edu.aua.interviews.persistance.Interviewer;
 import edu.aua.interviews.persistance.dto.InterviewerDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class InterviewerConverterImpl implements InterviewerConverter {
-
-    @Autowired
-    private InterviewConverter interviewConverter;
-
     @Override
     public List<InterviewerDTO> bulkConvertToDTO(List<Interviewer> users) {
-        return users.stream().map(this::convertToDTO).collect(Collectors.toList());
-
+        return users.stream().map(this::convertToDTO).toList();
     }
 
     @Override
-    public InterviewerDTO convertToDTO(Interviewer user) {
-        if (user == null) {
+    public InterviewerDTO convertToDTO(Interviewer interviewer) {
+        if (interviewer == null) {
             return null;
         }
         final InterviewerDTO interviewerDTO = new InterviewerDTO();
-        interviewerDTO.setId(user.getId());
-        interviewerDTO.setFirstName(user.getFirstName());
-        interviewerDTO.setLastName(user.getLastName());
-        interviewerDTO.setEmail(user.getEmail());
+        interviewerDTO.setId(interviewer.getId());
+        interviewerDTO.setFirstName(interviewer.getFirstName());
+        interviewerDTO.setLastName(interviewer.getLastName());
+        interviewerDTO.setEmail(interviewer.getEmail());
+        interviewerDTO.setPosition(interviewer.getPosition());
         return interviewerDTO;
     }
 
     @Override
     public List<Interviewer> bulkConvertToEntity(List<InterviewerDTO> userDTOS) {
-        return userDTOS.stream().map(this::convertToEntity).collect(Collectors.toList());
-
+        return userDTOS.stream().map(this::convertToEntity).toList();
     }
 
     @Override
@@ -50,6 +42,7 @@ public class InterviewerConverterImpl implements InterviewerConverter {
         interviewer.setFirstName(interviewerDTO.getFirstName());
         interviewer.setLastName(interviewerDTO.getLastName());
         interviewer.setEmail(interviewerDTO.getEmail());
+        interviewer.setPosition(interviewerDTO.getPosition());
         return interviewer;
     }
 }

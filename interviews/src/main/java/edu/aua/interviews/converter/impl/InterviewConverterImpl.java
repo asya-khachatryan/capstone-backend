@@ -31,8 +31,6 @@ public class InterviewConverterImpl implements InterviewConverter {
     private final InterviewerRepository interviewerRepository;
     private final TalentConverter talentConverter;
 
-
-
     @Override
     public List<InterviewResponseDTO> bulkConvertToDTO(List<Interview> interviews) {
         return interviews.stream().map(this::convertToDTO).collect(Collectors.toList());

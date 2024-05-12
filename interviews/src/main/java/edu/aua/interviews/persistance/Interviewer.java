@@ -30,6 +30,9 @@ public class Interviewer {
     @Column(name = "email")
     private String email;
 
-    @ManyToMany(mappedBy = "interview")
+    @Column(name = "position")
+    private String position;
+
+    @ManyToMany(mappedBy = "interviewers")
     private List<Interview> interviews = new ArrayList<>();
 }

@@ -6,6 +6,7 @@ import edu.aua.auth.dto.UserDTO;
 import edu.aua.auth.persistance.User;
 import edu.aua.auth.repository.RoleRepository;
 import edu.aua.auth.repository.UserRepository;
+import edu.aua.common.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User update(String username, UserDTO userDTO) {
-        final User user = this.userRepository.findByUsername(username);
+        final User user = findByUsernameOrThrow(username);
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
@@ -40,10 +41,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        final User user = this.userRepository.findByUsername(username);
-        log.debug("IN findByUsername  - user: {} found by username: {}", user, username);
-        return user;
+    public User findByUsernameOrThrow(String username) {
+        return this.userRepository.findByUsername(username)
+                .orElseThrow(() -> new NotFoundException("No user found with this username", username));
     }
 
     @Override

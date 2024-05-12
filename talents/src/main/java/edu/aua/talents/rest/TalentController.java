@@ -2,8 +2,8 @@ package edu.aua.talents.rest;
 
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.service.TalentService;
-import edu.aua.talents.service.dto.TalentRequestDTO;
-import edu.aua.talents.service.dto.TalentResponseDTO;
+import edu.aua.talents.persistance.dto.TalentRequestDTO;
+import edu.aua.talents.persistance.dto.TalentResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

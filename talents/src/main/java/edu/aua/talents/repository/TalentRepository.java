@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TalentRepository extends JpaRepository<Talent, Long>, TalentCustomRepository {
+public interface TalentRepository extends JpaRepository<Talent, Long> {
 
     Optional<Talent> findByEmail(String email);
 
-    @Override
+    @Query("SELECT t FROM Talent t WHERE t.specialization.id = ?1")
     List<Talent> findBySpecializationId(Long specializationId);
 
     @Query("SELECT t FROM Talent t WHERE t.talentStatus = INTERVIEW_PREPARATION" +

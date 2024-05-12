@@ -4,7 +4,6 @@ import edu.aua.interviews.persistance.Interview;
 import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
 import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
 import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
-import edu.aua.talents.exception.TalentNotFoundException;
 
 import java.util.List;
 
@@ -13,5 +12,5 @@ public interface InterviewService {
 
     String addEvent(CalendlyEventDTO eventDTO);
 
-    List<Interview> findTalentAllInterviews(Long id) throws TalentNotFoundException;
+    List<Interview> findTalentAllInterviews(Long id);
 }

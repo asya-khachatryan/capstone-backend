@@ -11,25 +11,23 @@ import edu.aua.interviews.repositories.FeedbackRepository;
 import edu.aua.interviews.repositories.InterviewRepository;
 import edu.aua.interviews.service.FeedbackService;
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.persistance.entity.Talent;
+import edu.aua.talents.persistance.Talent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@PropertySource("classpath:interview-service.properties")
 public class FeedbackServiceImpl implements FeedbackService {
 
     private final FeedbackRepository feedbackRepository;
     private final FeedbackConverter feedbackConverter;
     private final InterviewRepository interviewRepository;
     private final TalentConverter talentConverter;
-
-    @Value("${interview.flow.passing.threshold}")
-    private Integer passingThreshold;
 
     @Override
     public InterviewFeedbackDTO create(InterviewFeedbackDTO feedbackRequestDTO, Long interviewID) {

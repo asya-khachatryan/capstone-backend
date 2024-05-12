@@ -1,8 +1,8 @@
 package edu.aua.talents.converter;
 
 import edu.aua.talents.persistance.Specialization;
-import edu.aua.talents.service.dto.SpecializationRequestDTO;
-import edu.aua.talents.service.dto.SpecializationResponseDTO;
+import edu.aua.talents.persistance.dto.SpecializationRequestDTO;
+import edu.aua.talents.persistance.dto.SpecializationResponseDTO;
 
 import java.util.List;
 

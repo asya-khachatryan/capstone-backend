@@ -46,7 +46,7 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseEntity<UserDTO> search(@RequestParam("username") String username) {
-        return ResponseEntity.ok(userConverter.convert(userService.findByUsername(username)));
+        return ResponseEntity.ok(userConverter.convert(userService.findByUsernameOrThrow(username)));
     }
 
     @GetMapping("/{id}")
@@ -61,12 +61,11 @@ public class UserController {
 
     @GetMapping("/me")
     public UserProfileDTO getUser(@AuthenticationPrincipal UserDetails userDetails) {
-        System.out.println(userDetails);
         if (userDetails == null) {
             return new UserProfileDTO(true, null);
         }
         return new UserProfileDTO(false,
-                userConverter.convert(userService.findByUsername(userDetails.getUsername())));
+                userConverter.convert(userService.findByUsernameOrThrow(userDetails.getUsername())));
     }
 
 }

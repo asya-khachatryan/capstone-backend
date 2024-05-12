@@ -2,8 +2,8 @@ package edu.aua.talents.rest;
 
 import edu.aua.talents.converter.SpecializationConverter;
 import edu.aua.talents.service.SpecializationService;
-import edu.aua.talents.service.dto.SpecializationRequestDTO;
-import edu.aua.talents.service.dto.SpecializationResponseDTO;
+import edu.aua.talents.persistance.dto.SpecializationRequestDTO;
+import edu.aua.talents.persistance.dto.SpecializationResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

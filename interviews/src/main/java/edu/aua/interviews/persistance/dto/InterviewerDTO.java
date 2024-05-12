@@ -16,5 +16,9 @@ public class InterviewerDTO {
     private String lastName;
 
     @Email
+    @NotBlank(message = "required")
     private String email;
+
+    @NotBlank(message = "required")
+    private String position;
 }

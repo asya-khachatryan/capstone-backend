@@ -1,7 +1,7 @@
 package edu.aua.talents.service;
 
 import edu.aua.talents.persistance.Specialization;
-import edu.aua.talents.service.dto.SpecializationRequestDTO;
+import edu.aua.talents.persistance.dto.SpecializationRequestDTO;
 
 import java.util.List;
 

@@ -1,5 +1,9 @@
 package edu.aua.onboardingservice.service.impl;
 
+import edu.aua.auth.persistance.User;
+import edu.aua.auth.service.UserService;
+import edu.aua.common.model.EmailDTO;
+import edu.aua.common.service.EmailService;
 import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.exception.MenteeNotFoundException;
@@ -8,6 +12,7 @@ import edu.aua.onboardingservice.persistance.entity.Mentee;
 import edu.aua.onboardingservice.service.MenteeService;
 import edu.aua.onboardingservice.service.MentorService;
 import edu.aua.onboardingservice.service.dto.MenteeDto;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,7 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static edu.aua.onboardingservice.util.EmailMessages.ONBOARDING_DOCUMENT_EMAIL_SUBJECT;
+import static edu.aua.onboardingservice.util.EmailMessages.generateOnboardingEmailText;
+
 @Service
+@RequiredArgsConstructor
 public class MenteeServiceImpl implements MenteeService {
 
     private static final Logger log = LoggerFactory.getLogger(MenteeServiceImpl.class);
@@ -23,14 +32,8 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeRepository menteeRepository;
     private final MenteeConverter menteeConverter;
     private final MentorService mentorService;
-
-    public MenteeServiceImpl(MenteeRepository menteeRepository,
-                             MenteeConverter menteeConverter,
-                             MentorService mentorService) {
-        this.menteeRepository = menteeRepository;
-        this.menteeConverter = menteeConverter;
-        this.mentorService = mentorService;
-    }
+    private final EmailService emailService;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -91,5 +94,20 @@ public class MenteeServiceImpl implements MenteeService {
         mentee.setDisplayName(menteeDTO.getDisplayName());
         mentee.setAccountId(menteeDTO.getAccountId());
         mentee.setMentor(mentorService.findById(menteeDTO.getMentorId()));
+    }
+
+    @Override
+    @Transactional
+    public boolean sendOnboardingEmail(Long menteeId, String hrManagerUsername, String documentUrl) {
+        User hrManager = userService.findByUsernameOrThrow(hrManagerUsername);
+        Mentee mentee = findById(menteeId);
+        EmailDTO emailDTO = new EmailDTO();
+        emailDTO.setEmailTo(mentee.getEmail());
+        emailDTO.setSubject(ONBOARDING_DOCUMENT_EMAIL_SUBJECT);
+        emailDTO.setText(generateOnboardingEmailText(mentee.getFirstName(), documentUrl, hrManager.getFullName()));
+        emailService.sendEmail(emailDTO);
+        mentee.setOnboardingDocumentSent(true);
+        menteeRepository.save(mentee);
+        return true;
     }
 }

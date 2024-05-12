@@ -1,4 +1,4 @@
-package edu.aua.talents.service.dto;
+package edu.aua.talents.persistance.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

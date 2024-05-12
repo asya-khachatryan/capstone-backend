@@ -5,12 +5,17 @@ import edu.aua.onboardingservice.client.jiraclient.user.dto.JiraUserDto;
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.persistance.entity.Mentee;
 import edu.aua.onboardingservice.service.dto.MenteeDto;
+import edu.aua.talents.converter.SpecializationConverter;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Converter
+@RequiredArgsConstructor
 public class MenteeConverterImpl implements MenteeConverter {
+
+    private final SpecializationConverter specializationConverter;
 
     @Override
     public List<MenteeDto> bulkConvertToDto(final List<Mentee> mentees) {
@@ -28,6 +33,8 @@ public class MenteeConverterImpl implements MenteeConverter {
         menteeDTO.setDisplayName(mentee.getDisplayName());
         menteeDTO.setMentorId(mentee.getMentor().getId());
         menteeDTO.setAccountId(mentee.getAccountId());
+        menteeDTO.setOnboardingDocumentSent(mentee.getOnboardingDocumentSent());
+        menteeDTO.setSpecialization(specializationConverter.convertToDTO(mentee.getSpecialization()));
         return menteeDTO;
     }
 
