@@ -1,5 +1,6 @@
 package edu.aua.talents.persistance.dto;
 
+import edu.aua.common.model.SpecializationDTO;
 import edu.aua.talents.persistance.TalentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class TalentResponseDTO {
     private String surname;
     private String email;
     private String phoneNumber;
-    private SpecializationResponseDTO specialization;
+    private SpecializationDTO specialization;
     private TalentStatus status;
     private String cvFileName;
     private LocalDateTime dateApplied;

@@ -7,6 +7,8 @@ import edu.aua.interviews.persistance.dto.InterviewerDTO;
 import edu.aua.interviews.repositories.InterviewerRepository;
 import edu.aua.interviews.service.InterviewerService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,11 @@ public class InterviewerServiceImpl implements InterviewerService {
 
     private final InterviewerRepository repository;
     private final InterviewerConverter converter;
+
+    @Override
+    public Page<Interviewer> findAll(Pageable page) {
+        return repository.findAll(page);
+    }
 
     @Override
     @Transactional(readOnly = true)

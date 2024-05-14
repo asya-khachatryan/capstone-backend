@@ -1,17 +1,21 @@
 package edu.aua.talents.service.impl;
 
+import edu.aua.common.converter.SpecializationConverter;
 import edu.aua.common.exception.NotFoundException;
 import edu.aua.common.service.EmailService;
+import edu.aua.common.service.SpecializationService;
 import edu.aua.common.util.TimeService;
+import edu.aua.onboardingservice.persistance.MenteeDto;
+import edu.aua.onboardingservice.service.MenteeService;
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.persistance.TalentStatus;
-import edu.aua.talents.repository.TalentRepository;
-import edu.aua.talents.service.AmazonClientService;
-import edu.aua.talents.service.SpecializationService;
-import edu.aua.talents.service.TalentService;
 import edu.aua.talents.persistance.dto.TalentRequestDTO;
 import edu.aua.talents.persistance.dto.TalentResponseDTO;
+import edu.aua.talents.repository.TalentRepository;
+import edu.aua.talents.service.AmazonClientService;
+import edu.aua.talents.service.TalentService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -27,22 +31,15 @@ import static edu.aua.talents.utils.EmailGenerator.generateEmail;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class TalentServiceImpl implements TalentService {
     private final TalentRepository talentRepository;
     private final SpecializationService specializationService;
+    private final SpecializationConverter specializationConverter;
     private final TalentConverter talentConverter;
     private final EmailService emailService;
     private final AmazonClientService amazonClientService;
-
-    public TalentServiceImpl(TalentRepository talentRepository, SpecializationService specializationService,
-                             TalentConverter talentConverter,
-                             EmailService emailService, AmazonClientService amazonClientService) {
-        this.talentRepository = talentRepository;
-        this.specializationService = specializationService;
-        this.talentConverter = talentConverter;
-        this.emailService = emailService;
-        this.amazonClientService = amazonClientService;
-    }
+    private final MenteeService menteeService;
 
     @Override
     @Transactional(readOnly = true)
@@ -126,8 +123,17 @@ public class TalentServiceImpl implements TalentService {
         final Talent talent = talentRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("No talent found by this email", email));
         talent.setTalentStatus(TalentStatus.valueOf(status.name()));
-        log.info("In updateStatus Talent the status of talent with email {} successfully updated to {}", email, status);
         final Talent savedTalent = talentRepository.save(talent);
+        if (status.equals(TalentStatus.HIRED)) {
+            MenteeDto menteeDto = new MenteeDto();
+            menteeDto.setFirstName(talent.getName());
+            menteeDto.setLastName(talent.getSurname());
+            menteeDto.setEmail(talent.getEmail());
+            menteeDto.setPhoneNumber(talent.getPhoneNumber());
+            menteeDto.setOnboardingDocumentSent(false);
+            menteeDto.setSpecialization(specializationConverter.convertToDTO(talent.getSpecialization()));
+            menteeService.create(menteeDto);
+        }
         return talentConverter.convertToDTO(savedTalent);
 
     }

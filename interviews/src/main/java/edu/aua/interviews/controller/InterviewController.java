@@ -9,6 +9,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,12 +30,14 @@ public class InterviewController {
     private final InterviewService interviewService;
 
     @PostMapping
-    public ResponseEntity<InterviewResponseDTO> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO) {
-        return ResponseEntity.ok(interviewService.startInterviewPreparation(interviewRequestDTO));
+    public ResponseEntity<InterviewResponseDTO> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO,
+                                                       @AuthenticationPrincipal UserDetails userDetails) {
+        interviewRequestDTO.setCalendarURI("https://calendly.com/d/cn6k-grw-35m/interview");
+        return ResponseEntity.ok(interviewService.startInterviewPreparation(interviewRequestDTO, userDetails.getUsername()));
     }
 
     @PutMapping
-    public ResponseEntity<String> updateFromEvent(@RequestBody @Valid CalendlyEventDTO eventDTO) {
+    public ResponseEntity<Boolean> updateFromEvent(@RequestBody @Valid CalendlyEventDTO eventDTO) {
         return ResponseEntity.ok(interviewService.addEvent(eventDTO));
     }
 

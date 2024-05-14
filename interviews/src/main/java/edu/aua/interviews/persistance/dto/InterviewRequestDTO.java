@@ -12,16 +12,15 @@ import java.util.List;
 @Data
 public class InterviewRequestDTO {
 
-    @NotBlank
     @URL
     private String calendarURI;
 
     @NotNull
-    private List<Long> userIDs;
+    private List<Long> interviewerIds;
 
     @NotNull
     private Long talentID;
 
-    @NotBlank
+    @NotNull
     private InterviewType interviewType;
 }

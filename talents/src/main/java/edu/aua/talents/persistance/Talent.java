@@ -1,5 +1,6 @@
 package edu.aua.talents.persistance;
 
+import edu.aua.common.model.Specialization;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -39,7 +40,7 @@ public class Talent {
     @NotBlank(message = "Surname is mandatory")
     private String surname;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     @Email
     @NotBlank(message = "Email is mandatory")
     private String email;

@@ -8,9 +8,9 @@ import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
 import java.util.List;
 
 public interface InterviewService {
-    InterviewResponseDTO startInterviewPreparation(InterviewRequestDTO interviewRequestDTO);
+    InterviewResponseDTO startInterviewPreparation(InterviewRequestDTO interviewRequestDTO, String hrManagerUsername);
 
-    String addEvent(CalendlyEventDTO eventDTO);
+    Boolean addEvent(CalendlyEventDTO eventDTO);
 
     List<Interview> findTalentAllInterviews(Long id);
 }

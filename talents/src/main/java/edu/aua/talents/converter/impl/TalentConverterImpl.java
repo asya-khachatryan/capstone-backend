@@ -1,9 +1,9 @@
 package edu.aua.talents.converter.impl;
 
-import edu.aua.talents.converter.SpecializationConverter;
+import edu.aua.common.converter.SpecializationConverter;
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.persistance.Talent;
-import edu.aua.talents.service.SpecializationService;
+import edu.aua.common.service.SpecializationService;
 import edu.aua.talents.persistance.dto.TalentRequestDTO;
 import edu.aua.talents.persistance.dto.TalentResponseDTO;
 import org.springframework.stereotype.Component;

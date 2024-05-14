@@ -2,14 +2,16 @@ package edu.aua.common.service;
 
 import edu.aua.common.model.EmailDTO;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.UnsupportedEncodingException;
 
 
 @Service
@@ -18,7 +20,10 @@ public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
 
     @Value("${email.from.address}")
-    private String setFrom;
+    private String fromName;
+
+    @Value("${email.sender.username}")
+    private String fromEmail;
 
     public EmailServiceImpl(final JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
@@ -27,8 +32,8 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public void sendEmail(final EmailDTO emailDTO) {
         log.info("Started sendEmail");
-        final SimpleMailMessage simpleMailMessage = buildMailMessage(emailDTO);
-        javaMailSender.send(simpleMailMessage);
+        final MimeMessage message = buildMailMessage(emailDTO);
+        javaMailSender.send(message);
         log.info("Finished sendEmail");
     }
 
@@ -41,8 +46,7 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(emailDTO.getEmailTo());
             helper.setSubject(emailDTO.getSubject());
             helper.setText(emailDTO.getText(), true);
-        } catch (
-                MessagingException e) {
+        } catch (MessagingException e) {
             log.error("Error when trying to attach file", e);
             throw new RuntimeException(e.getMessage());
         }
@@ -68,14 +72,20 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(msg);
     }
 
-    private SimpleMailMessage buildMailMessage(final EmailDTO emailDTO) {
+    private MimeMessage buildMailMessage(final EmailDTO emailDTO) {
         log.info("Started creating mail message");
-        final SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom(setFrom);
-        simpleMailMessage.setTo(emailDTO.getEmailTo());
-        simpleMailMessage.setSubject(emailDTO.getSubject());
-        simpleMailMessage.setText(emailDTO.getText());
-        log.info("Finished creating mail message");
-        return simpleMailMessage;
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = null;
+        try {
+            helper = new MimeMessageHelper(message, false);
+            helper.setFrom(new InternetAddress(fromEmail, fromName));
+            helper.setTo(emailDTO.getEmailTo());
+            helper.setSubject(emailDTO.getSubject());
+            helper.setText(emailDTO.getText());
+            log.info("Finished creating mail message");
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return message;
     }
 }

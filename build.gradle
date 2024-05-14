@@ -49,6 +49,7 @@ project(':calendly') {
 project(':interviews') {
     dependencies {
         implementation project(':common')
+        implementation project(':auth')
         implementation project(':talents')
     }
 }
@@ -57,8 +58,6 @@ project(':onboarding-service') {
     dependencies {
         implementation project(':common')
         implementation project(':auth')
-        implementation project(':talents')
-
     }
 }
 
@@ -67,6 +66,7 @@ project(':talents') {
     dependencies {
         implementation project(':common')
         implementation project(':auth')
+        implementation project(':onboarding-service')
     }
 }
 

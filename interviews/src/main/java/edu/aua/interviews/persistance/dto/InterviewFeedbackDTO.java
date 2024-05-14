@@ -11,7 +11,7 @@ public class InterviewFeedbackDTO {
 
     private Long id;
 
-    @NotBlank(message = "topic must not be blank")
+//    @NotBlank(message = "topic must not be blank")
     private String topic;
 
     @NotBlank(message = "feedback must not be blank")

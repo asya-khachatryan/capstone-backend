@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import edu.aua.talents.persistance.Specialization;
+import edu.aua.common.model.Specialization;
 import edu.aua.talents.persistance.Talent;
 import edu.aua.talents.service.AmazonClientService;
 import jakarta.annotation.PostConstruct;
@@ -72,13 +72,12 @@ public class AmazonClientServiceImpl implements AmazonClientService {
     }
 
     public String uploadFile(MultipartFile file, Talent talent) {
-        System.out.println(bucketName);
         log.info("Requested to upload a file to AWS S3 - {}", file.getName());
         File fileObj = convertMultiPartFileToFile(file);
         final Specialization specialization = talent.getSpecialization();
         final String yearMonth = new SimpleDateFormat("yyyy-MM").format(new Date());
         final String fileName = new StringBuilder()
-                .append(specialization.getSpecializationType())
+                .append(specialization.getSpecializationName().replaceAll("\\s", "_"))
                 .append("-").append(yearMonth)
                 .append("-").append(talent.getFullName())
                 .append("-").append("CV").toString();
@@ -139,7 +138,7 @@ public class AmazonClientServiceImpl implements AmazonClientService {
         final Specialization specialization = talent.getSpecialization();
         final String yearMonth = new SimpleDateFormat("yyyy-MM").format(new Date());
         final String fileName = new StringBuilder()
-                .append(specialization.getSpecializationType())
+                .append(specialization.getSpecializationName())
                 .append("/").append(yearMonth)
                 .append("_").append(talent.getFullName())
                 .append("_").append(file.getOriginalFilename()).toString();

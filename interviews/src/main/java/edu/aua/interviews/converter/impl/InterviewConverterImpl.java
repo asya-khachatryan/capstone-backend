@@ -50,7 +50,9 @@ public class InterviewConverterImpl implements InterviewConverter {
         interviewResponseDTO.setInterviewStatus(InterviewStatus.valueOf(interview.getInterviewStatus().name()));
         interviewResponseDTO.setTalentDTO(talentConverter.convertToDTO(interview.getTalent()));
         interviewResponseDTO.setInterviewerDTO(interviewerConverter.bulkConvertToDTO(interview.getInterviewers()));
-        interviewResponseDTO.setInterviewFeedback(feedbackConverter.convertToDTO(interview.getInterviewFeedback()));
+        if(interview.getInterviewFeedback() != null) {
+            interviewResponseDTO.setInterviewFeedback(feedbackConverter.convertToDTO(interview.getInterviewFeedback()));
+        }
         return interviewResponseDTO;
 
     }
@@ -65,7 +67,7 @@ public class InterviewConverterImpl implements InterviewConverter {
         final Interview interview = new Interview();
         interview.setUrl(URI.create(interviewRequestDTO.getCalendarURI()));
 //        interview.setTalent(talentConverter.convertToEntity(interviewRequestDTO.getTalentDTO()));
-        interview.setInterviewers(interviewerRepository.findAllById(interviewRequestDTO.getUserIDs()));
+        interview.setInterviewers(interviewerRepository.findAllById(interviewRequestDTO.getInterviewerIds()));
         return interview;
     }
 }

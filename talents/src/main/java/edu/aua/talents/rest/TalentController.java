@@ -48,7 +48,6 @@ public class TalentController {
     public ResponseEntity<Page<TalentResponseDTO>> getAll(@RequestParam int page,
                                                           @RequestParam int size,
                                                           @RequestParam String sort) {
-
         if (sort.isEmpty()) {
             return ResponseEntity.ok(talentService.findAll(PageRequest.of(page, size)));
         } else {
