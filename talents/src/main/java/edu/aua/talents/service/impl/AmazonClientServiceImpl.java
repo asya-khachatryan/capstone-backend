@@ -48,18 +48,18 @@ public class AmazonClientServiceImpl implements AmazonClientService {
     @Value("${amazon.s3.secret-key}")
     private String secretKey;
 
-    private String generateUrl(String fileName, HttpMethod httpMethod) {
+    private String generateUrl(String fileName) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.DATE, 1); // Generated URL will be valid for 24 hours
-        return amazonS3.generatePresignedUrl(bucketName, fileName, calendar.getTime(), httpMethod).toString();
+        calendar.add(Calendar.DATE, 1);
+        return amazonS3.generatePresignedUrl(bucketName, fileName, calendar.getTime(), HttpMethod.GET).toString();
     }
 
     public String getUrlByFileName(String fileName) {
         if (!amazonS3.doesObjectExist(bucketName, fileName))
             return "File does not exist";
         log.info("Generating signed URL for file name {}", fileName);
-        return generateUrl(fileName, HttpMethod.GET);
+        return generateUrl(fileName);
     }
 
     @PostConstruct

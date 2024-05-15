@@ -14,7 +14,7 @@ public class EmailMessages {
             "\n" +
             "As you begin your journey with us, it's essential to ensure that you have all the necessary information and resources to hit the ground running. We’ve compiled a list of resources as a part of our onboarding checklist that we believe will help you better understand our company, its culture, and your role. Please check out the url below where you will find detailed information about the next steps you should take and all the setups you should have for your onboarding process. " +
             "%s" +
-            "\n\nPlease review these materials at your convenience and feel free to reach out if you have any questions or if there’s anything you’d like to discuss further.\n\nBest,\n%s";
+            "\n\nPlease review these materials at your convenience and feel free to reach out if you have any questions or if there’s anything you’d like to discuss further.\n\nBest,\n%s\nHR Specialist, Talent Journey";
 
     public static String generateOnboardingEmailText(String employeeName, String documentUrl, String hrManagerName) {
         return String.format(ONBOARDING_DOCUMENT_EMAIL_TEXT, employeeName, documentUrl, hrManagerName);

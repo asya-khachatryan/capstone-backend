@@ -28,7 +28,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Transactional(readOnly = true)
     public Interviewer findByIdOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No user found by this id", id));
+                .orElseThrow(() -> new NotFoundException("No interviewer found by this id", id));
     }
 
     @Override

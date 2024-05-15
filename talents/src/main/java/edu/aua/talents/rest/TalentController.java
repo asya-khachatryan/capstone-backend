@@ -1,15 +1,17 @@
 package edu.aua.talents.rest;
 
 import edu.aua.talents.converter.TalentConverter;
-import edu.aua.talents.service.TalentService;
 import edu.aua.talents.persistance.dto.TalentRequestDTO;
 import edu.aua.talents.persistance.dto.TalentResponseDTO;
+import edu.aua.talents.service.TalentService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,14 +79,16 @@ public class TalentController {
         return ResponseEntity.ok(talentConverter.convertToDTO(talentService.create(talentRequestDTO)));
     }
 
-    @PutMapping("/update/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<TalentResponseDTO> update(@PathVariable Long id, @RequestBody @Valid TalentRequestDTO talentRequestDTO) {
         return ResponseEntity.ok(talentConverter.convertToDTO(talentService.update(id, talentRequestDTO)));
     }
 
-    @PutMapping("/update/")
-    public ResponseEntity<TalentResponseDTO> updateStatus(@RequestBody TalentRequestDTO dto) {
-        return ResponseEntity.ok(talentService.updateStatus(dto));
+    @PutMapping("/status/{id}")
+    public ResponseEntity<TalentResponseDTO> updateStatus(@PathVariable Long id,
+                                                          @RequestBody TalentRequestDTO dto,
+                                                          @AuthenticationPrincipal UserDetails userDetails) {
+        return ResponseEntity.ok(talentService.updateStatus(id, userDetails.getUsername(), dto));
     }
 
     @DeleteMapping("/{id}")
@@ -98,7 +102,7 @@ public class TalentController {
     }
 
 
-    @PostMapping("upload/{talentId}")
+    @PostMapping("/upload/{talentId}")
     public ResponseEntity<String> uploadAWS(@PathVariable Long talentId, @RequestParam("file") MultipartFile file) throws IOException {
         return ResponseEntity.ok(talentService.addCVForTalent(talentId, file));
     }

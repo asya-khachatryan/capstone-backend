@@ -1,5 +1,6 @@
 package edu.aua.interviews.controller;
 
+import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.persistance.Interview;
 import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
 import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
@@ -28,6 +29,7 @@ import java.util.List;
 public class InterviewController {
 
     private final InterviewService interviewService;
+    private final InterviewConverter interviewConverter;
 
     @PostMapping
     public ResponseEntity<InterviewResponseDTO> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO,
@@ -44,5 +46,10 @@ public class InterviewController {
     @GetMapping("/search/{talentId}")
     public ResponseEntity<List<Interview>> findAllInterviews(@PathVariable Long talentId) {
         return ResponseEntity.ok(interviewService.findTalentAllInterviews(talentId));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<InterviewResponseDTO>> findAllInterviews() {
+        return ResponseEntity.ok(interviewConverter.bulkConvertToDTO(interviewService.findAll()));
     }
 }

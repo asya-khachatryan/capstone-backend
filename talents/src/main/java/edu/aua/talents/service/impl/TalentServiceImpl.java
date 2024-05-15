@@ -1,7 +1,10 @@
 package edu.aua.talents.service.impl;
 
+import edu.aua.auth.persistance.User;
+import edu.aua.auth.service.UserService;
 import edu.aua.common.converter.SpecializationConverter;
 import edu.aua.common.exception.NotFoundException;
+import edu.aua.common.model.EmailDTO;
 import edu.aua.common.service.EmailService;
 import edu.aua.common.service.SpecializationService;
 import edu.aua.common.util.TimeService;
@@ -27,7 +30,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+import static edu.aua.talents.utils.EmailGenerator.REJECTION_SUBJECT_LINE;
 import static edu.aua.talents.utils.EmailGenerator.generateEmail;
+import static edu.aua.talents.utils.EmailGenerator.generateRejectionEmail;
 
 @Service
 @Slf4j
@@ -40,6 +45,7 @@ public class TalentServiceImpl implements TalentService {
     private final EmailService emailService;
     private final AmazonClientService amazonClientService;
     private final MenteeService menteeService;
+    private final UserService userService;
 
     @Override
     @Transactional(readOnly = true)
@@ -116,13 +122,12 @@ public class TalentServiceImpl implements TalentService {
     }
 
     @Override
-    public TalentResponseDTO updateStatus(TalentRequestDTO talentRequestDTO) {
-        String email = talentRequestDTO.getEmail();
+    public TalentResponseDTO updateStatus(Long id, TalentRequestDTO talentRequestDTO) {
         TalentStatus status = talentRequestDTO.getStatus();
-        log.info("Requested to update status to {} of a talent with email {}", status, email);
-        final Talent talent = talentRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("No talent found by this email", email));
-        talent.setTalentStatus(TalentStatus.valueOf(status.name()));
+        log.info("Requested to update status to {} of a talent with id {}", status, id);
+        final Talent talent = talentRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
+        talent.setTalentStatus(status);
         final Talent savedTalent = talentRepository.save(talent);
         if (status.equals(TalentStatus.HIRED)) {
             MenteeDto menteeDto = new MenteeDto();
@@ -135,7 +140,23 @@ public class TalentServiceImpl implements TalentService {
             menteeService.create(menteeDto);
         }
         return talentConverter.convertToDTO(savedTalent);
+    }
 
+    @Override
+    public TalentResponseDTO updateStatus(Long id, String hrManagerUsername, TalentRequestDTO dto) {
+        TalentResponseDTO talent = updateStatus(id, dto);
+        TalentStatus status = talent.getStatus();
+        User hrManager = userService.findByUsernameOrThrow(hrManagerUsername);
+        if (status.equals(TalentStatus.REJECTED)) {
+            EmailDTO email = EmailDTO.builder()
+                    .emailTo(talent.getEmail())
+                    .subject(String.format(REJECTION_SUBJECT_LINE, talent.getSpecialization().getSpecializationName()))
+                    .text(generateRejectionEmail(talent.getName(),
+                            talent.getSpecialization().getSpecializationName(), hrManager.getFullName()))
+                    .build();
+            emailService.sendEmail(email);
+        }
+        return talent;
     }
 
     @Override

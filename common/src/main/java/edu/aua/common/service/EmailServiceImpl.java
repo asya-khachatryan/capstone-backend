@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
 
-    @Value("${email.from.address}")
+    @Value("${email.display.name}")
     private String fromName;
 
     @Value("${email.sender.username}")

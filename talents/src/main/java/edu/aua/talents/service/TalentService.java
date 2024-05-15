@@ -28,7 +28,10 @@ public interface TalentService {
 
     boolean deleteById(Long id);
 
-    TalentResponseDTO updateStatus(TalentRequestDTO dto);
+    TalentResponseDTO updateStatus(Long id, TalentRequestDTO dto);
+
+    TalentResponseDTO updateStatus(Long id, String hrManagerUsername, TalentRequestDTO dto);
+
 
     List<Talent> findBySpecializationId(Long specializationId);
 

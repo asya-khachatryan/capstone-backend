@@ -15,13 +15,11 @@ import java.net.URI;
 public class EmailTextGenerator {
     private final SpringTemplateEngine thymeleafTemplateEngine;
 
-    public static final String INTERVIEW_INVITATION_SUBJECT = "Congratulations! You're Invited to Interview";
+    public static final String INTERVIEW_INVITATION_SUBJECT = "Congratulations! You're Invited to an interview";
 
     private static final String INTERVIEW_INVITATION_TEXT = "Dear %s,\n" +
             "\n" +
             "I hope this email finds you well. I am writing to extend an invitation for an interview for the %s role at Talent Journey. We were impressed by your resume and believe that you could be a valuable addition to our team.\n" +
-            "\n" +
-            "The interview will provide an opportunity for us to discuss your qualifications further, as well as for you to learn more about our company culture, values, and the role itself.\n" +
             "\n" +
             "To schedule a convenient time for the interview, please use the link below to access our Calendly scheduling tool:\n" +
             "\n" +
@@ -46,7 +44,7 @@ public class EmailTextGenerator {
             String calendlyURL,
             String hrManagerEmail,
             String hrManagerFullName) {
-        return String.format(candidateFullName, specializationName, calendlyURL, hrManagerEmail, hrManagerFullName, hrManagerEmail);
+        return String.format(INTERVIEW_INVITATION_TEXT, candidateFullName, specializationName, calendlyURL, hrManagerEmail, hrManagerFullName, hrManagerEmail);
     }
 
     private static final String subject = "Interview invitation with Talent_Journey company";

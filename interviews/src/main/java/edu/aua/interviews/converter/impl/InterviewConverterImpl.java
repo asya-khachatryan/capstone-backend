@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -33,7 +32,7 @@ public class InterviewConverterImpl implements InterviewConverter {
 
     @Override
     public List<InterviewResponseDTO> bulkConvertToDTO(List<Interview> interviews) {
-        return interviews.stream().map(this::convertToDTO).collect(Collectors.toList());
+        return interviews.stream().map(this::convertToDTO).toList();
 
     }
 
@@ -48,9 +47,9 @@ public class InterviewConverterImpl implements InterviewConverter {
         interviewResponseDTO.setEndDate(interview.getEndDate());
         interviewResponseDTO.setInterviewType(InterviewType.valueOf(interview.getInterviewType().name()));
         interviewResponseDTO.setInterviewStatus(InterviewStatus.valueOf(interview.getInterviewStatus().name()));
-        interviewResponseDTO.setTalentDTO(talentConverter.convertToDTO(interview.getTalent()));
-        interviewResponseDTO.setInterviewerDTO(interviewerConverter.bulkConvertToDTO(interview.getInterviewers()));
-        if(interview.getInterviewFeedback() != null) {
+        interviewResponseDTO.setTalent(talentConverter.convertToDTO(interview.getTalent()));
+        interviewResponseDTO.setInterviewers(interviewerConverter.bulkConvertToDTO(interview.getInterviewers()));
+        if (interview.getInterviewFeedback() != null) {
             interviewResponseDTO.setInterviewFeedback(feedbackConverter.convertToDTO(interview.getInterviewFeedback()));
         }
         return interviewResponseDTO;
@@ -59,7 +58,7 @@ public class InterviewConverterImpl implements InterviewConverter {
 
     @Override
     public List<Interview> bulkConvertToEntity(List<InterviewRequestDTO> interviews) {
-        return interviews.stream().map(this::convertToEntity).collect(Collectors.toList());
+        return interviews.stream().map(this::convertToEntity).toList();
     }
 
     @Override

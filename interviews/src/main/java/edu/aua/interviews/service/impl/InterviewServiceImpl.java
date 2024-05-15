@@ -2,6 +2,7 @@ package edu.aua.interviews.service.impl;
 
 import edu.aua.auth.persistance.User;
 import edu.aua.auth.service.UserService;
+import edu.aua.common.model.EmailDTO;
 import edu.aua.common.service.EmailService;
 import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.persistance.EventType;
@@ -21,8 +22,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
 import java.util.List;
+
+import static edu.aua.interviews.service.EmailTextGenerator.INTERVIEW_INVITATION_SUBJECT;
+import static edu.aua.interviews.service.EmailTextGenerator.generateInterviewInvitationEmailText;
 
 
 @Service
@@ -39,6 +45,12 @@ public class InterviewServiceImpl implements InterviewService {
     private final UserService userService;
 
     @Override
+    public List<Interview> findAll() {
+        return interviewRepository.findAll();
+    }
+
+    @Override
+    @Transactional
     public InterviewResponseDTO startInterviewPreparation(InterviewRequestDTO interviewRequestDTO, String hrManagerUsername) {
         User hrManager = userService.findByUsernameOrThrow(hrManagerUsername);
         Interview interview = new Interview();
@@ -47,18 +59,19 @@ public class InterviewServiceImpl implements InterviewService {
         interview.setInterviewers(interviewRequestDTO.getInterviewerIds().stream().map(interviewerService::findByIdOrThrow).toList());
         interview.setInterviewStatus(InterviewStatus.IN_PREPARATION);
         interview.setInterviewType(interviewRequestDTO.getInterviewType());
-//        String emailText = generateInterviewInvitationEmailText(
-//                interview.getTalent().getFullName(),
-//                interview.getTalent().getSpecialization().getSpecializationType(),
-//                //todo check
-//                interview.getUrl().toString(),
-//                hrManager.getEmail(),
-//                hrManager.getFullName());
-//        EmailDTO emailDTO = new EmailDTO(interview.getTalent().getEmail(), INTERVIEW_INVITATION_SUBJECT, emailText);
-//        emailService.sendEmail(emailDTO);
+        interview.setUrl(URI.create(interviewRequestDTO.getCalendarURI()));
+        String emailText = generateInterviewInvitationEmailText(
+                interview.getTalent().getFullName(),
+                interview.getTalent().getSpecialization().getSpecializationName(),
+                //todo check
+                interview.getUrl().toString(),
+                hrManager.getEmail(),
+                hrManager.getFullName());
+        EmailDTO emailDTO = new EmailDTO(interview.getTalent().getEmail(), INTERVIEW_INVITATION_SUBJECT, emailText);
+        emailService.sendEmail(emailDTO);
         interviewRepository.save(interview);
         talent.setTalentStatus(TalentStatus.INTERVIEW_PREPARATION);
-        talentService.updateStatus(new TalentRequestDTO(talent.getName(),
+        talentService.updateStatus(talent.getId(), new TalentRequestDTO(talent.getName(),
                 talent.getSurname(), talent.getEmail(), talent.getPhoneNumber(),
                 talent.getSpecialization().getId(), talent.getTalentStatus()));
         return interviewConverter.convertToDTO(interview);

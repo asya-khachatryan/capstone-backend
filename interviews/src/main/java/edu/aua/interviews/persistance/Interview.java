@@ -32,7 +32,6 @@ import java.util.List;
 @Table(name = "interview")
 @Data
 public class Interview {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,8 +60,7 @@ public class Interview {
     @JsonBackReference
     private Talent talent;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "interview_interviewers",
             joinColumns = @JoinColumn(name = "interview_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "interviewer_id", referencedColumnName = "id"))

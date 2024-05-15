@@ -27,10 +27,10 @@ public class InterviewResponseDTO {
     private InterviewStatus interviewStatus;
 
     @NotNull
-    private TalentResponseDTO talentDTO;
+    private TalentResponseDTO talent;
 
     @NotNull
-    private List<InterviewerDTO> interviewerDTO;
+    private List<InterviewerDTO> interviewers;
 
     @NotNull
     private InterviewFeedbackDTO interviewFeedback;

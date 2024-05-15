@@ -13,7 +13,7 @@ public class CalendlyWebhookController {
         this.calendarService = calendarService;
     }
 
-    @PostMapping("/getPayload")
+    @PostMapping("/calendly/payload")
     public void getMyPayload(@RequestBody WebhookDto webhook) {
         this.calendarService.sendEventToClient(webhook);
     }

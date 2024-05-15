@@ -13,4 +13,6 @@ public interface InterviewService {
     Boolean addEvent(CalendlyEventDTO eventDTO);
 
     List<Interview> findTalentAllInterviews(Long id);
+
+    List<Interview> findAll();
 }
