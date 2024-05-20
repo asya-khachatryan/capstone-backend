@@ -1,5 +1,6 @@
 package edu.aua.talents.rest;
 
+import edu.aua.common.exception.NotFoundException;
 import edu.aua.talents.converter.TalentConverter;
 import edu.aua.talents.persistance.dto.TalentRequestDTO;
 import edu.aua.talents.persistance.dto.TalentResponseDTO;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.rmi.NotBoundException;
 import java.util.List;
 
 @RestController
@@ -50,7 +52,7 @@ public class TalentController {
     public ResponseEntity<Page<TalentResponseDTO>> getAll(@RequestParam int page,
                                                           @RequestParam int size,
                                                           @RequestParam String sort) {
-        if (sort.isEmpty()) {
+        if (sort == null || sort.isEmpty()) {
             return ResponseEntity.ok(talentService.findAll(PageRequest.of(page, size)));
         } else {
             String[] split = sort.split(",");
@@ -61,17 +63,21 @@ public class TalentController {
                     )
             );
         }
-//                                Sort.by(sort.stream()
-//                                        .map(el -> el.split(","))
-//                                        .map(ar -> new Sort.Order(Sort.Direction.fromString(ar[1]), ar[0]))
-//                                        .toList())
-
-
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TalentResponseDTO> getTalentById(@PathVariable Long id) {
         return ResponseEntity.ok(talentConverter.convertToDTO(talentService.findByIdOrThrow(id)));
+    }
+
+    @GetMapping("/test")
+    public void test() {
+        throw new RuntimeException("Test exception");
+    }
+
+    @GetMapping("/test1")
+    public void test1() {
+        throw new NotFoundException(String.format("Test exception %s", 1));
     }
 
     @PostMapping

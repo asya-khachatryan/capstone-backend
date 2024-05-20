@@ -56,7 +56,9 @@ public class UserController {
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody UserDTO userdto) {
-        return ResponseEntity.ok(userConverter.convert(userService.register(userdto)));
+        UserDTO dto = userConverter.convert(userService.register(userdto));
+        dto.setPassword(null);
+        return ResponseEntity.ok(dto);
     }
 
     @GetMapping("/me")
@@ -64,8 +66,9 @@ public class UserController {
         if (userDetails == null) {
             return new UserProfileDTO(true, null);
         }
+        UserDTO convert = userConverter.convert(userService.findByUsernameOrThrow(userDetails.getUsername()));
         return new UserProfileDTO(false,
-                userConverter.convert(userService.findByUsernameOrThrow(userDetails.getUsername())));
+                convert);
     }
 
 }

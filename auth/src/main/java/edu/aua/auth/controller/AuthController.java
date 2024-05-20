@@ -30,6 +30,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> authenticateUser(@RequestBody final AuthRequest loginRequest,
                                                    HttpServletResponse response) {
+        System.out.println(loginRequest);
         String accessToken = authService.login(loginRequest);
         ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(true)
