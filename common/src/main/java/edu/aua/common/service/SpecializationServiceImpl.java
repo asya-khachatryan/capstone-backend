@@ -7,6 +7,9 @@ import edu.aua.common.model.Specialization;
 import edu.aua.common.model.SpecializationDTO;
 import edu.aua.common.repository.SpecializationRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,13 @@ public class SpecializationServiceImpl implements SpecializationService {
     }
 
     @Override
+    public Page<SpecializationDTO> findAll(Pageable page) {
+        Page<Specialization> all = specializationRepository.findAll(page);
+        return new PageImpl<>(specializationConverter.bulkConvertToDTO(all.getContent()),
+                all.getPageable(), all.getTotalElements());
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<Specialization> findALl() {
         log.info("In findAll Specialization requested to get all specializations");
@@ -33,10 +43,10 @@ public class SpecializationServiceImpl implements SpecializationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Specialization findById(Long id) {
+    public Specialization findByIdOrThrow(Long id) {
         log.info("In findById Specialization requested to get the specialization with id {}", id);
         return this.specializationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No specialization found with this id", id));
+                .orElseThrow(() -> new NotFoundException(String.format("No specialization found with this id %s", id)));
     }
 
     @Override
@@ -54,8 +64,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     @Transactional
     public Specialization update(Long id, SpecializationDTO specializationDTO) {
         log.info("Requested to update a specialization with id {}", id);
-        final Specialization specialization = this.specializationRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No specialization found with this id", id));
+        final Specialization specialization = findByIdOrThrow(id);
         specialization.setSpecializationName(specializationDTO.getSpecializationName());
         specialization.setActive(specializationDTO.isActive());
         log.info("In update Specialization specialization with id {} successfully updated", id);
@@ -66,9 +75,7 @@ public class SpecializationServiceImpl implements SpecializationService {
     @Transactional
     public boolean deleteById(Long id) {
         log.info("Requested to delete a specialization with id {}", id);
-        if (!specializationRepository.existsById(id)) {
-            throw new NotFoundException("No specialization found by this id", id);
-        }
+        findByIdOrThrow(id);
         specializationRepository.deleteById(id);
         log.info("In deleteById Specialization specialization with id {} successfully deleted", id);
         return true;

@@ -2,7 +2,10 @@ package edu.aua.talents.repository;
 
 
 import edu.aua.talents.persistance.Talent;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -11,9 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TalentRepository extends JpaRepository<Talent, Long> {
+public interface TalentRepository extends JpaRepository<Talent, Long>, JpaSpecificationExecutor<Talent> {
 
-    Optional<Talent> findByEmail(String email);
+    @Query("SELECT t FROM Talent t WHERE " +
+            "t.talentStatus = 'APPLIED' " +
+            "OR t.talentStatus = 'REJECTED' ")
+    Page<Talent> findAllAppliedAndRejected(Pageable pageable);
+
+    Optional<List<Talent>> findByEmail(String email);
 
     @Query("SELECT t FROM Talent t WHERE t.specialization.id = ?1")
     List<Talent> findBySpecializationId(Long specializationId);
@@ -32,7 +40,7 @@ public interface TalentRepository extends JpaRepository<Talent, Long> {
             "            OR t.talentStatus = 'STAGE2_INTERVIEW'" +
             "        )" +
             "    )")
-    List<Talent> findIntervieweeLike(@Param("query") String query);
+    List<Talent> findInterviewees(@Param("query") String query);
 
     @Query("SELECT t FROM Talent t WHERE " +
             "    (" +
@@ -42,7 +50,7 @@ public interface TalentRepository extends JpaRepository<Talent, Long> {
             "            OR t.talentStatus = 'REJECTED'" +
             "        )" +
             "    )")
-    List<Talent> findTalentLike(@Param("query") String query);
+    List<Talent> findTalents(@Param("query") String query);
 
 
 }

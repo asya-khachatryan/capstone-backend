@@ -28,7 +28,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Transactional(readOnly = true)
     public Interviewer findByIdOrThrow(Long id) {
         return repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No interviewer found by this id", id));
+                .orElseThrow(() -> new NotFoundException(String.format("No interviewer found by this id %s", id)));
     }
 
     @Override
@@ -40,8 +40,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Override
     @Transactional
     public Interviewer update(Long id, InterviewerDTO interviewerDTO) {
-        final Interviewer interviewer = repository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No interviewer found by this id", id));
+        final Interviewer interviewer = findByIdOrThrow(id);
         interviewer.setFirstName(interviewerDTO.getFirstName());
         interviewer.setLastName(interviewerDTO.getLastName());
         interviewer.setEmail(interviewerDTO.getEmail());
@@ -52,9 +51,7 @@ public class InterviewerServiceImpl implements InterviewerService {
     @Override
     @Transactional
     public boolean deleteById(Long id) {
-        if (!repository.existsById(id)) {
-            throw new NotFoundException("No talent found by this id", id);
-        }
+        findByIdOrThrow(id);
         repository.deleteById(id);
         return true;
     }

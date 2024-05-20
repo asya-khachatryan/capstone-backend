@@ -2,6 +2,7 @@ package edu.aua.interviews.controller;
 
 import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.persistance.Interview;
+import edu.aua.interviews.persistance.InterviewType;
 import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
 import edu.aua.interviews.persistance.dto.InterviewRequestDTO;
 import edu.aua.interviews.persistance.dto.InterviewResponseDTO;
@@ -9,6 +10,8 @@ import edu.aua.interviews.service.InterviewService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,15 +29,19 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/interview")
+@PropertySource("classpath:interview-service.properties")
 public class InterviewController {
 
     private final InterviewService interviewService;
     private final InterviewConverter interviewConverter;
 
+    @Value("${calendly.meeting.uri}")
+    private String calendlyUri;
+
     @PostMapping
     public ResponseEntity<InterviewResponseDTO> create(@RequestBody @Valid InterviewRequestDTO interviewRequestDTO,
                                                        @AuthenticationPrincipal UserDetails userDetails) {
-        interviewRequestDTO.setCalendarURI("https://calendly.com/d/cn6k-grw-35m/interview");
+        interviewRequestDTO.setCalendarURI(calendlyUri);
         return ResponseEntity.ok(interviewService.startInterviewPreparation(interviewRequestDTO, userDetails.getUsername()));
     }
 
@@ -51,5 +58,19 @@ public class InterviewController {
     @GetMapping
     public ResponseEntity<List<InterviewResponseDTO>> findAllInterviews() {
         return ResponseEntity.ok(interviewConverter.bulkConvertToDTO(interviewService.findAll()));
+    }
+
+    @PutMapping("/{id}/feedback")
+    public ResponseEntity<InterviewResponseDTO> submitFeedback(@PathVariable Long id,
+                                                               @RequestBody String feedback,
+                                                               @AuthenticationPrincipal UserDetails userDetails) {
+        System.out.println(feedback);
+        return ResponseEntity.ok(interviewConverter.convertToDTO(
+                interviewService.submitFeedback(id, feedback, userDetails.getUsername())));
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<InterviewType[]> getInterviewTypes() {
+        return ResponseEntity.ok(InterviewType.values());
     }
 }

@@ -35,7 +35,7 @@ public class InterviewerController {
                                                        @RequestParam int size,
                                                        @RequestParam String sort) {
 
-        if (sort.isEmpty()) {
+        if (sort == null || sort.isEmpty()) {
             Page<Interviewer> all = service.findAll(PageRequest.of(page, size));
             return ResponseEntity.ok(new PageImpl<>(converter.bulkConvertToDTO(all.getContent()),
                     all.getPageable(), all.getTotalElements()));

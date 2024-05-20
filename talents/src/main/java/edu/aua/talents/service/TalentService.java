@@ -14,11 +14,11 @@ public interface TalentService {
 
     List<Talent> findAll();
 
-    Page<TalentResponseDTO> findAll(Pageable page);
+    Page<TalentResponseDTO> findAllAppliedAndRejected(Pageable page);
 
     Talent findByIdOrThrow(Long id);
 
-    Talent findByEmailOrThrow(String email);
+    Talent findLatestByEmailOrThrow(String email);
 
     Boolean existsById(Long id);
 
@@ -31,7 +31,6 @@ public interface TalentService {
     TalentResponseDTO updateStatus(Long id, TalentRequestDTO dto);
 
     TalentResponseDTO updateStatus(Long id, String hrManagerUsername, TalentRequestDTO dto);
-
 
     List<Talent> findBySpecializationId(Long specializationId);
 

@@ -18,7 +18,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Mentee extends AbstractAuditAwareBaseEntity {
+public class Mentee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

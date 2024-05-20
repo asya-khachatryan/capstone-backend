@@ -7,6 +7,5 @@ public enum TalentStatus {
     STAGE2_INTERVIEW,
     POSITION_OFFERED,
     REJECTED,
-    HIRED,
-    WAITING
+    HIRED
 }

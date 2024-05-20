@@ -6,6 +6,9 @@ import edu.aua.calendly.config.CalendlyProperties;
 import edu.aua.calendly.service.CalendarService;
 import edu.aua.calendly.dto.EventResponse;
 import edu.aua.calendly.dto.WebhookDto;
+import edu.aua.interviews.persistance.dto.CalendlyEventDTO;
+import edu.aua.interviews.service.InterviewService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,23 +19,20 @@ import org.springframework.web.client.RestTemplate;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class CalendarServiceImpl implements CalendarService {
     private final InterviewClient interviewClient;
     private final CalendlyProperties calendlyProperties;
-
-    public CalendarServiceImpl(final InterviewClient interviewClient,
-                               final CalendlyProperties calendlyProperties) {
-        this.interviewClient = interviewClient;
-        this.calendlyProperties = calendlyProperties;
-    }
+    private final InterviewService interviewService;
 
     @Override
     public void sendEventToClient(final WebhookDto webhook) {
         log.info("Start sendEventToClient");
         final String eventUri = webhook.getPayload().getEventUri();
         final EventResponse event = getEvent(eventUri);
-        final InterviewEventDTO interviewEvent = interviewClient.generateInterviewEvent(webhook, event.getResource());
-        interviewClient.postInterviewEventDTO(interviewEvent);
+        final CalendlyEventDTO calendlyEventDTO = interviewClient.generateInterviewEvent(webhook, event.getResource());
+//        interviewClient.postInterviewEventDTO(interviewEvent);
+        interviewService.addEvent(calendlyEventDTO);
         log.info("Finished sendEventToClient");
     }
 

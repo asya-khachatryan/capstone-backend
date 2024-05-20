@@ -13,6 +13,6 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     List<Interview> findAllByTalent_Id(Long talentId);
 
-    @Query("SELECT i FROM Interview i WHERE i.talent.email = :talentEmail AND i.interviewStatus = :status")
-    List<Interview> findAllByTalentEmailAndInterviewStatus(String talentEmail, InterviewStatus status);
+    @Query("SELECT i FROM Interview i WHERE i.talent.email = :talentEmail")
+    List<Interview> findAllByTalentEmail(String talentEmail);
 }

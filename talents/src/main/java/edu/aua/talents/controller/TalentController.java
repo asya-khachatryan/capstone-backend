@@ -1,4 +1,4 @@
-package edu.aua.talents.rest;
+package edu.aua.talents.controller;
 
 import edu.aua.common.exception.NotFoundException;
 import edu.aua.talents.converter.TalentConverter;
@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.rmi.NotBoundException;
 import java.util.List;
 
 @RestController
@@ -53,10 +52,10 @@ public class TalentController {
                                                           @RequestParam int size,
                                                           @RequestParam String sort) {
         if (sort == null || sort.isEmpty()) {
-            return ResponseEntity.ok(talentService.findAll(PageRequest.of(page, size)));
+            return ResponseEntity.ok(talentService.findAllAppliedAndRejected(PageRequest.of(page, size)));
         } else {
             String[] split = sort.split(",");
-            return ResponseEntity.ok(talentService.findAll(PageRequest.of(page, size,
+            return ResponseEntity.ok(talentService.findAllAppliedAndRejected(PageRequest.of(page, size,
                                     Sort.by(new Sort.Order(Sort.Direction.fromString(split[1].trim()),
                                             split[0].trim()))
                             )

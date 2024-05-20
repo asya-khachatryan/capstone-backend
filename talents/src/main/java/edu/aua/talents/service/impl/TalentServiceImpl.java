@@ -22,12 +22,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 import static edu.aua.talents.utils.EmailGenerator.REJECTION_SUBJECT_LINE;
@@ -55,8 +57,8 @@ public class TalentServiceImpl implements TalentService {
     }
 
     @Override
-    public Page<TalentResponseDTO> findAll(Pageable page) {
-        Page<Talent> all = talentRepository.findAll(page);
+    public Page<TalentResponseDTO> findAllAppliedAndRejected(Pageable page) {
+        Page<Talent> all = talentRepository.findAllAppliedAndRejected(page);
         return new PageImpl<>(talentConverter.bulkConvertToDTO(all.getContent()),
                 all.getPageable(), all.getTotalElements());
     }
@@ -66,14 +68,16 @@ public class TalentServiceImpl implements TalentService {
     public Talent findByIdOrThrow(Long id) {
         log.info("In findById Talent requested to get the talent with id {}", id);
         return talentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
+                .orElseThrow(() -> new NotFoundException(String.format("No talent found by this id %s", id)));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Talent findByEmailOrThrow(String email) throws NotFoundException {
-        return talentRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("No talent found by this email", email));
+    public Talent findLatestByEmailOrThrow(String email) throws NotFoundException {
+        List<Talent> talents = talentRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException(String.format("No talent found by this email %s", email)));
+        return talents.stream()
+                .max(Comparator.comparing(Talent::getDateApplied)).get();
     }
 
     @Override
@@ -98,13 +102,12 @@ public class TalentServiceImpl implements TalentService {
     @Transactional
     public Talent update(Long id, TalentRequestDTO talentDTO) {
         log.info("Requested to update a talent with id {}", id);
-        final Talent talent = talentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
+        final Talent talent = findByIdOrThrow(id);
         talent.setName(talentDTO.getName());
         talent.setSurname(talentDTO.getSurname());
         talent.setEmail(talentDTO.getEmail());
         talent.setPhoneNumber(talentDTO.getPhoneNumber());
-        talent.setSpecialization(specializationService.findById(talentDTO.getSpecializationId()));
+        talent.setSpecialization(specializationService.findByIdOrThrow(talentDTO.getSpecializationId()));
         log.info("In update Talent talent with id {} successfully updated", id);
         return talentRepository.save(talent);
     }
@@ -113,20 +116,18 @@ public class TalentServiceImpl implements TalentService {
     @Transactional
     public boolean deleteById(Long id) {
         log.info("Requested to delete a talent with id {}", id);
-        if (!talentRepository.existsById(id)) {
-            throw new NotFoundException("No talent found by this id", id);
-        }
+        findByIdOrThrow(id);
         talentRepository.deleteById(id);
         log.info("In deleteById Talent talent with id {} successfully deleted", id);
         return true;
     }
 
     @Override
+    @Transactional
     public TalentResponseDTO updateStatus(Long id, TalentRequestDTO talentRequestDTO) {
         TalentStatus status = talentRequestDTO.getStatus();
         log.info("Requested to update status to {} of a talent with id {}", status, id);
-        final Talent talent = talentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
+        final Talent talent = findByIdOrThrow(id);
         talent.setTalentStatus(status);
         final Talent savedTalent = talentRepository.save(talent);
         if (status.equals(TalentStatus.HIRED)) {
@@ -167,8 +168,7 @@ public class TalentServiceImpl implements TalentService {
 
     @Override
     public String addCVForTalent(Long id, MultipartFile file) throws IOException {
-        final Talent talent = talentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No talent found by this id", id));
+        final Talent talent = findByIdOrThrow(id);
         String cvFileName = amazonClientService.uploadFile(file, talent);
         talent.setCvFileName(cvFileName);
         talentRepository.save(talent);
@@ -180,13 +180,12 @@ public class TalentServiceImpl implements TalentService {
         return talentRepository.findInterviewees();
     }
 
-    //todo
     @Override
     public List<Talent> searchTalent(String query, String type) {
         if (type.equals("Application")) {
-            return talentRepository.findTalentLike(query);
+            return talentRepository.findTalents(query);
         } else {
-            return talentRepository.findIntervieweeLike(query);
+            return talentRepository.findInterviewees(query);
         }
     }
 

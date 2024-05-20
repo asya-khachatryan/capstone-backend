@@ -1,6 +1,7 @@
 package edu.aua.onboardingservice.converter.impl;
 
 import edu.aua.common.converter.SpecializationConverter;
+import edu.aua.common.service.SpecializationService;
 import edu.aua.onboardingservice.annotation.Converter;
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.persistance.Mentee;
@@ -14,6 +15,7 @@ import java.util.List;
 public class MenteeConverterImpl implements MenteeConverter {
 
     private final SpecializationConverter specializationConverter;
+    private final SpecializationService specializationService;
 
     @Override
     public List<MenteeDto> bulkConvertToDto(final List<Mentee> mentees) {
@@ -46,7 +48,7 @@ public class MenteeConverterImpl implements MenteeConverter {
         mentee.setEmail(menteeDto.getEmail());
         mentee.setPhoneNumber(menteeDto.getPhoneNumber());
         mentee.setOnboardingDocumentSent(menteeDto.getOnboardingDocumentSent());
-        mentee.setSpecialization(specializationConverter.convertToEntity(menteeDto.getSpecialization()));
+        mentee.setSpecialization(specializationService.findByIdOrThrow(menteeDto.getSpecialization().getId()));
         return mentee;
     }
 }

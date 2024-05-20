@@ -35,4 +35,8 @@ public class Interviewer {
 
     @ManyToMany(mappedBy = "interviewers")
     private List<Interview> interviews = new ArrayList<>();
+
+    public String getFullName(){
+        return firstName + " " + lastName;
+    }
 }

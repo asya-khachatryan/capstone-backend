@@ -32,11 +32,11 @@ public class Talent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
+    @Column(name = "first_name")
     @NotBlank(message = "Name is mandatory")
     private String name;
 
-    @Column(name = "surname")
+    @Column(name = "last_name")
     @NotBlank(message = "Surname is mandatory")
     private String surname;
 
@@ -56,6 +56,7 @@ public class Talent {
 
     @Enumerated(EnumType.STRING)
     @NotNull
+    @Column(name = "status")
     private TalentStatus talentStatus;
 
     @Column(name = "cv_file_name")
@@ -65,7 +66,7 @@ public class Talent {
     private LocalDateTime dateApplied;
 
     public String getFullName() {
-        return this.getName() + "_" + this.getSurname();
+        return this.getName() + " " + this.getSurname();
     }
 
 }

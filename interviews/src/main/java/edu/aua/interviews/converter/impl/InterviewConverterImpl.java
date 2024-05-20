@@ -1,6 +1,5 @@
 package edu.aua.interviews.converter.impl;
 
-import edu.aua.interviews.converter.FeedbackConverter;
 import edu.aua.interviews.converter.InterviewConverter;
 import edu.aua.interviews.converter.InterviewerConverter;
 import edu.aua.interviews.persistance.Interview;
@@ -24,9 +23,6 @@ public class InterviewConverterImpl implements InterviewConverter {
     @Autowired
     private InterviewerConverter interviewerConverter;
 
-    @Autowired
-    private FeedbackConverter feedbackConverter;
-
     private final InterviewerRepository interviewerRepository;
     private final TalentConverter talentConverter;
 
@@ -49,9 +45,7 @@ public class InterviewConverterImpl implements InterviewConverter {
         interviewResponseDTO.setInterviewStatus(InterviewStatus.valueOf(interview.getInterviewStatus().name()));
         interviewResponseDTO.setTalent(talentConverter.convertToDTO(interview.getTalent()));
         interviewResponseDTO.setInterviewers(interviewerConverter.bulkConvertToDTO(interview.getInterviewers()));
-        if (interview.getInterviewFeedback() != null) {
-            interviewResponseDTO.setInterviewFeedback(feedbackConverter.convertToDTO(interview.getInterviewFeedback()));
-        }
+        interviewResponseDTO.setInterviewFeedback(interview.getInterviewFeedback());
         return interviewResponseDTO;
 
     }

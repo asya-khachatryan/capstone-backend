@@ -1,4 +1,4 @@
-package edu.aua.common.rest;
+package edu.aua.common.controller;
 
 import edu.aua.common.converter.SpecializationConverter;
 import edu.aua.common.model.SpecializationDTO;

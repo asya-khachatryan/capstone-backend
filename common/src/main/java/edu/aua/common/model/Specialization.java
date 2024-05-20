@@ -17,7 +17,7 @@ public class Specialization {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "specialization_type", unique = true)
+    @Column(name = "name", unique = true)
     @NotBlank(message = "Specialization type is mandatory")
     private String specializationName;
 

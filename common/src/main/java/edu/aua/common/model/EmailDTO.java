@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -26,9 +28,18 @@ public class EmailDTO {
 
     private URI linkOfCalendar;
 
+    private List<String> ccRecipients = new ArrayList<>();
+
     public EmailDTO(String emailTo, String subject, String text) {
         this.emailTo = emailTo;
         this.subject = subject;
         this.text = text;
+    }
+
+    public EmailDTO(String emailTo, String subject, String text, List<String> ccRecipients) {
+        this.emailTo = emailTo;
+        this.subject = subject;
+        this.text = text;
+        this.ccRecipients = ccRecipients;
     }
 }

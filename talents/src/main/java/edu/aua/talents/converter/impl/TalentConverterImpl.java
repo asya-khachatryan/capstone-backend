@@ -58,7 +58,7 @@ public class TalentConverterImpl implements TalentConverter {
         talent.setEmail(talentDTO.getEmail());
         talent.setPhoneNumber(talentDTO.getPhoneNumber());
         //TODO question
-        talent.setSpecialization(specializationService.findById(talentDTO.getSpecializationId()));
+        talent.setSpecialization(specializationService.findByIdOrThrow(talentDTO.getSpecializationId()));
         return talent;
     }
 }

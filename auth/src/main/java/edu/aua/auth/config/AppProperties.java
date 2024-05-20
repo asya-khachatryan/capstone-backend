@@ -23,7 +23,6 @@ public class AppProperties {
                     tokenSecret.getBytes());
         }
 
-
         public String getTokenSecret() {
             return tokenSecret;
         }

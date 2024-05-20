@@ -1,4 +1,4 @@
-package edu.aua.onboardingservice.rest;
+package edu.aua.onboardingservice.controller;
 
 import edu.aua.onboardingservice.converter.MenteeConverter;
 import edu.aua.onboardingservice.persistance.MenteeDto;
@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/mentee")
@@ -74,7 +76,7 @@ public class MenteeController {
     }
 
     @GetMapping("/search")
-    public void search(@RequestParam String query, @RequestParam String type) {
-
+    public ResponseEntity<List<MenteeDto>> search(@RequestParam String query) {
+        return ResponseEntity.ok(converter.bulkConvertToDto(service.searchMentee(query)));
     }
 }

@@ -18,8 +18,6 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JWTTokenProvider {
-
-
     private final AppProperties appProperties;
 
     public JWTTokenProvider(AppProperties appProperties) {
@@ -30,7 +28,7 @@ public class JWTTokenProvider {
         final JWTUser userPrincipal = (JWTUser) authentication.getPrincipal();
         final Date now = new Date();
         final Date expiryDate = new Date(now.getTime() + appProperties.getAuth().getTokenExpirationMsec());
-
+        log.info("expiryDate" + expiryDate);
         return Jwts.builder()
                 .claim("roles", authentication.getAuthorities())
                 .setSubject(userPrincipal.getUsername())

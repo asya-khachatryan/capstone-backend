@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Builder
@@ -12,9 +13,9 @@ public class InterviewEventDTO implements Serializable {
 
     private EventType eventType;
 
-    private Date endDate;
+    private LocalDateTime endDate;
 
-    private Date startDate;
+    private LocalDateTime startDate;
 
     private String eventName;
 

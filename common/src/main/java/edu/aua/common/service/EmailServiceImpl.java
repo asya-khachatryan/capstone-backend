@@ -2,6 +2,7 @@ package edu.aua.common.service;
 
 import edu.aua.common.model.EmailDTO;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -82,8 +83,19 @@ public class EmailServiceImpl implements EmailService {
             helper.setTo(emailDTO.getEmailTo());
             helper.setSubject(emailDTO.getSubject());
             helper.setText(emailDTO.getText());
+            if (emailDTO.getCcRecipients() != null && !emailDTO.getCcRecipients().isEmpty()) {
+                helper.setCc(emailDTO.getCcRecipients()
+                        .stream().map(a-> {
+                            try {
+                                return new InternetAddress(a);
+                            } catch (AddressException e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }).toArray(InternetAddress[]::new));
+            }
             log.info("Finished creating mail message");
-        } catch (MessagingException | UnsupportedEncodingException e) {
+        } catch (MessagingException  | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
         return message;

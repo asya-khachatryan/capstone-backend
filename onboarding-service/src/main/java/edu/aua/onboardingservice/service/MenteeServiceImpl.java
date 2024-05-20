@@ -2,6 +2,7 @@ package edu.aua.onboardingservice.service;
 
 import edu.aua.auth.persistance.User;
 import edu.aua.auth.service.UserService;
+import edu.aua.common.converter.SpecializationConverter;
 import edu.aua.common.exception.NotFoundException;
 import edu.aua.common.model.EmailDTO;
 import edu.aua.common.service.EmailService;
@@ -12,6 +13,9 @@ import edu.aua.onboardingservice.repository.MenteeRepository;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +34,15 @@ public class MenteeServiceImpl implements MenteeService {
     private final MenteeConverter menteeConverter;
     private final EmailService emailService;
     private final UserService userService;
+    private final SpecializationConverter specializationConverter;
+
+
+    @Override
+    public Page<MenteeDto> findAll(Pageable page) {
+        Page<Mentee> all = menteeRepository.findAll(page);
+        return new PageImpl<>(menteeConverter.bulkConvertToDto(all.getContent()),
+                all.getPageable(), all.getTotalElements());
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -40,24 +53,27 @@ public class MenteeServiceImpl implements MenteeService {
 
     @Override
     @Transactional(readOnly = true)
-    public Mentee findById(Long id) {
+    public Mentee findByIdOrThrow(Long id) {
         log.info("In findById Mentee requested to get the mentee with id {}", id);
         return this.menteeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No mentee found by this id", id));
+                .orElseThrow(() -> new NotFoundException(String.format("No mentee found by this id", id)));
     }
 
     @Override
     @Transactional
     public Mentee create(final MenteeDto menteeDto) {
-        return menteeRepository.save(buildMenteeFrom(menteeDto));
+        return menteeRepository.save(menteeConverter.convertToEntity(menteeDto));
     }
 
     @Override
     @Transactional
     public Mentee update(Long id, MenteeDto menteeDTO) {
-        final Mentee mentee = menteeRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("No mentee found by this id", id));
-        extractMentee(menteeDTO, mentee);
+        final Mentee mentee = findByIdOrThrow(id);
+        mentee.setFirstName(menteeDTO.getFirstName());
+        mentee.setLastName(menteeDTO.getLastName());
+        mentee.setEmail(menteeDTO.getEmail());
+        mentee.setPhoneNumber(menteeDTO.getPhoneNumber());
+        mentee.setSpecialization(specializationConverter.convertToEntity(menteeDTO.getSpecialization()));
         return menteeRepository.save(mentee);
     }
 
@@ -65,32 +81,17 @@ public class MenteeServiceImpl implements MenteeService {
     @Transactional
     public boolean deleteById(Long id) {
         log.info("Requested to delete a mentee with id {}", id);
-        if (!menteeRepository.existsById(id)) {
-            throw new NotFoundException("No mentee found by this id", id);
-        }
+        findByIdOrThrow(id);
         menteeRepository.deleteById(id);
         log.info("In deleteById Mentee mentee with id {} successfully deleted", id);
         return true;
-    }
-
-    private Mentee buildMenteeFrom(final MenteeDto menteeDTO) {
-        final Mentee mentee = new Mentee();
-        extractMentee(menteeDTO, mentee);
-        return mentee;
-    }
-
-    private void extractMentee(final MenteeDto menteeDTO, final Mentee mentee) {
-        mentee.setFirstName(menteeDTO.getFirstName());
-        mentee.setLastName(menteeDTO.getLastName());
-        mentee.setEmail(menteeDTO.getEmail());
-        mentee.setPhoneNumber(menteeDTO.getPhoneNumber());
     }
 
     @Override
     @Transactional
     public boolean sendOnboardingEmail(Long menteeId, String hrManagerUsername, String documentUrl) {
         User hrManager = userService.findByUsernameOrThrow(hrManagerUsername);
-        Mentee mentee = findById(menteeId);
+        Mentee mentee = findByIdOrThrow(menteeId);
         EmailDTO emailDTO = new EmailDTO();
         emailDTO.setEmailTo(mentee.getEmail());
         emailDTO.setSubject(ONBOARDING_DOCUMENT_EMAIL_SUBJECT);
@@ -99,5 +100,10 @@ public class MenteeServiceImpl implements MenteeService {
         mentee.setOnboardingDocumentSent(true);
         menteeRepository.save(mentee);
         return true;
+    }
+
+    @Override
+    public List<Mentee> searchMentee(String query) {
+        return menteeRepository.findMenteesLike(query);
     }
 }

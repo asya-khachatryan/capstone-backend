@@ -1,14 +1,8 @@
 package edu.aua.interviews.service;
 
-import edu.aua.interviews.persistance.EmailTextType;
-import edu.aua.interviews.persistance.Interviewer;
-import edu.aua.talents.persistance.Talent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-
-import java.net.URI;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +10,9 @@ public class EmailTextGenerator {
     private final SpringTemplateEngine thymeleafTemplateEngine;
 
     public static final String INTERVIEW_INVITATION_SUBJECT = "Congratulations! You're Invited to an interview";
+    public static final String INTERVIEW_CONFIRMATION_SUBJECT = "Talent Journey: Interview confirmed";
+    public static final String INTERVIEW_RESCHEDULING_SUBJECT = "Talent Journey: Interview to be rescheduled";
+
 
     private static final String INTERVIEW_INVITATION_TEXT = "Dear %s,\n" +
             "\n" +
@@ -38,6 +35,40 @@ public class EmailTextGenerator {
             "Talent Journey\n" +
             "%s";
 
+    private static final String INTERVIEW_CONFIRMATION_TEXT = "Dear %s,\n" +
+            "\n" +
+            "I hope this email finds you well.\n" +
+            "\n" +
+            "We are pleased to confirm your interview for the %s position at Talent Journey. Please find the details below:\n" +
+            "\n" +
+            "Date and time: %s\n" +
+            "Duration: %s\n" +
+            "Location: American University of Armenia, Baghramyan 40\n" +
+            "Interviewers: %s\n" +
+            "\n" +
+            "If you have any questions or need further assistance, please feel free to contact us.\n" +
+            "\n" +
+            "We look forward to meeting you.\n" +
+            "\n" +
+            "Best regards,\n" +
+            "Talent Journey";
+
+    private static final String INTERVIEW_RESCHEDULING_TEXT = "Dear %s,\n" +
+            "\n" +
+            "I hope this email finds you well.\n" +
+            "\n" +
+            "We have been informed that you have requested to reschedule your upcoming interview with Talent Journey for the %s position.\n" +
+            "To proceed, please use the following Calendly link to choose a new suitable time for the interview:\n" +
+            "\n" +
+            "%s\n" +
+            "\n" +
+            "We look forward to meeting with you at the rescheduled time.\n" +
+            "\n" +
+            "Thank you for your cooperation.\n" +
+            "\n" +
+            "Best regards,\n" +
+            "Talent Journey";
+
     public static String generateInterviewInvitationEmailText(
             String candidateFullName,
             String specializationName,
@@ -47,34 +78,22 @@ public class EmailTextGenerator {
         return String.format(INTERVIEW_INVITATION_TEXT, candidateFullName, specializationName, calendlyURL, hrManagerEmail, hrManagerFullName, hrManagerEmail);
     }
 
-    private static final String subject = "Interview invitation with Talent_Journey company";
-
-    public static String getSubject() {
-        return subject;
+    public static String generateInterviewConfirmationEmailText(
+            String candidateFullName,
+            String specializationName,
+            String dateAndTime,
+            String duration,
+            String interviewers) {
+        return String.format(INTERVIEW_CONFIRMATION_TEXT, candidateFullName, specializationName,
+                dateAndTime, duration, interviewers);
     }
 
-    public String getEmailText(Talent talent, Interviewer interviewer, EmailTextType emailTextType, URI uri) {
-        Context thymeleafContext = new Context();
-        switch (emailTextType) {
-            case TO_TALENT_FIRST:
-                thymeleafContext.setVariable("link", uri);
-                thymeleafContext.setVariable("name", talent.getName());
-                return thymeleafTemplateEngine.process("mail_to_talent.html", thymeleafContext);
-
-            case TO_TALENT:
-                thymeleafContext.setVariable("link", uri);
-                thymeleafContext.setVariable("name", talent.getName());
-                return thymeleafTemplateEngine.process("mail_to_talent_again.html", thymeleafContext);
-
-            case TO_USER:
-                thymeleafContext.setVariable("name", interviewer.getFirstName());
-                return thymeleafTemplateEngine.process("mail_to_user.html", thymeleafContext);
-
-            default:
-                return "";
-
-        }
+    public static String generateInterviewRescheduleEmailText(
+            String candidateFullName,
+            String specializationName,
+            String calendlyURL
+    ) {
+        return String.format(INTERVIEW_RESCHEDULING_TEXT, candidateFullName, specializationName,
+                calendlyURL);
     }
-
-
 }

@@ -15,7 +15,6 @@ public class InterviewResponseDTO {
 
     private Long id;
 
-    //    @DateTimeFormat
     private LocalDateTime startDate;
 
     private LocalDateTime endDate;
@@ -33,5 +32,5 @@ public class InterviewResponseDTO {
     private List<InterviewerDTO> interviewers;
 
     @NotNull
-    private InterviewFeedbackDTO interviewFeedback;
+    private String interviewFeedback;
 }

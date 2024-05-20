@@ -1,4 +1,4 @@
-package edu.aua.auth.rest;
+package edu.aua.auth.controller;
 
 
 import edu.aua.auth.converter.UserConverter;

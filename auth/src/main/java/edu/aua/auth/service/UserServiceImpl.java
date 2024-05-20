@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());
         user.setPhoneNumber(userDTO.getPhoneNumber());
-        return user;
+        return userRepository.save(user);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsernameOrThrow(String username) {
         return this.userRepository.findByUsername(username)
-                .orElseThrow(() -> new NotFoundException("No user found with this username", username));
+                .orElseThrow(() -> new NotFoundException(String.format("No user found with this username %s", username)));
     }
 
     @Override
